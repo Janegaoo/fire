@@ -1,0 +1,34 @@
+image: node:12.18
+
+stages:
+  - build
+
+cache:
+  key: ${CI_BUILD_REF_NAME}
+  untracked: true
+  paths:
+    - node_modules/
+
+build:
+  image: node
+  stage: build
+  only:
+    - tags
+    #- dev
+  script:
+    - echo $CI_PROJECT_DIR
+    - echo "npm i node_modules"
+    - npm install
+    - echo "Building the app"
+    #- npm run build:test
+    - npm run build:staging
+    #- npm run build:prod
+    #- scp -r dist/* $TEST_DEPLOY_USER:/usr/share/nginx/html/adminWeb/dist
+    #- ssh $TEST_ADMIN_USER 'sudo nginx -s reload'
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_PIPELINE_ID}"
+    paths:
+      - ./dist
+
+  tags: 
+    - webapp

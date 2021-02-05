@@ -1,0 +1,230 @@
+/**
+ * @Author: Jane
+ * @description: 公共css样式 作用用来初始化部分样式
+ * @param {type} 
+ * @return: 
+ */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+.colorWeak {
+  filter: invert(80%);
+}
+
+.ant-layout {
+  // min-height: 100vh;
+}
+
+canvas {
+  display: block;
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  // overflow: hidden;
+}
+
+.globalSpin {
+  width: 100%;
+  margin: 40px 0 !important;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+// 清除浮动
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: ' ';
+    clear: both;
+    height: 0;
+  }
+}
+
+:global {
+  .ant-menu-root {
+    height: 'calc(100vh - 144px)';
+    overflow-x: hidden;
+    border-right: none;
+    &::-webkit-scrollbar-thumb {
+      background-color: transparent;
+    }
+    &:hover {
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+      }
+    }
+  }
+  // .ant-layout-footer,
+  // .ant-layout {
+  //     background: #fff !important;
+  // }
+  .ant-table-wrapper .ant-table .ant-table-content .ant-table-body {
+    margin: 0;
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+
+input:-internal-autofill-selected {
+  background-color: rgb(232, 240, 254) !important;
+  background-image: none !important;
+  color: rgb(0, 0, 0) !important;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+.colorWeak {
+  filter: invert(80%);
+}
+.ant-layout {
+  min-height: 100vh;
+}
+canvas {
+  display: block;
+}
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.globalSpin {
+  width: 100%;
+  margin: 40px 0 !important;
+}
+ul,
+ol {
+  list-style: none;
+}
+.clearfix:after {
+  visibility: hidden;
+  display: block;
+  font-size: 0;
+  content: " ";
+  clear: both;
+  height: 0;
+}
+:global .ant-menu-root {
+  height: calc(100vh - 144px);
+  overflow-x: hidden;
+  border-right: none;
+}
+:global .ant-menu-root::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+:global .ant-menu-root:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+:global .ant-layout-footer,
+:global .ant-layout {
+  background: #fff !important;
+}
+:global .ant-table-wrapper .ant-table .ant-table-content .ant-table-body {
+  margin: 0;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.code ,
+.info {
+  .ant-table {
+    color: #001529;
+  }
+}
+.code-info {
+  .ant-descriptions-title {
+    color: #001529;
+    font-weight: 400;
+  }
+  .ant-descriptions {
+    border-top: 1px solid #e3e5e9;
+    margin-top: 14px;
+    padding-top: 18px;
+    padding-bottom: 20px;
+  }
+  .ant-descriptions-row > th, 
+  .ant-descriptions-row > td {
+    padding-bottom: 0;
+  }
+}
+.ant-table-thead > tr > th {
+  color: #484e5b;
+}
+.ant-table-thead > tr > th, .ant-table-tbody > tr > td {
+  padding: 13px 12px;
+}
+.ant-table-tbody > tr > td {
+  color: rgba(0,21,41,1);
+}
+.ant-tabs-nav .ant-tabs-tab {
+  font-size: 16px;
+}
+.ant-tabs-ink-bar {
+  // width: 32px !important;
+  // left: 22px;
+  height: 4px;
+}
+// 按钮共用样式
+.ant-btn {
+  border-radius: 4px;
+}
+.ant-btn-defult {
+  color: #f03947;
+  background-color: #fff;
+  border-color: #f03947;
+}
+// 表单公用样式
+.ant-select-selection, .ant-input, .ant-input-number {
+  border-radius: 4px;
+}
+.ant-form-item {
+  margin-bottom: 16px;
+}
+.home {
+  .tab-content{
+    .ant-layout,.ant-layout-sider{
+      background: transparent;
+    }
+    .ant-table-small{
+      border: none !important;
+    }
+    .ant-table-thead{
+      display: none;
+    }
+    .ant-table-tbody > tr > td{
+      padding: 6px 6px 6px 0 !important;
+      border-bottom: none !important;
+    }
+    .ant-table-tbody{
+      font-size: 12px;
+      color: rgba(72, 78, 91, 1);
+    }
+    .ant-layout {
+      min-height: auto;
+    }
+  }
+}
