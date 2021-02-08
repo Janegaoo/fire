@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Jane
- * @LastEditTime: 2020-08-11 16:39:30
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-05 14:51:26
  * @Descripttion:
 -->
 
@@ -64,6 +64,7 @@
 // @ is an alias to /src
 import AesUtil from '@/utils/aesUtil';
 import HTTP from '@/api/login';
+import db from '@/mock/db.json';
 
 export default {
   name: 'Login',
@@ -95,23 +96,28 @@ export default {
             account: values.account,
             password: AesPwd,
           };
-          HTTP.sysUserLogin(params)
-            .then((res) => {
-              if (res.data.status === 200) {
+          // todo
+          // HTTP.sysUserLogin(params)
+          //   .then((res) => {
+          //     if (res.data.status === 200) {
                 this.routes();
-                this.$store.dispatch('getUserInfo', res.data.sysUserInfo);
-              } else {
-                this.$message.error(res.data.message);
-              }
-            })
-            .catch(() => {
-              this.$message.error('请求失败！');
-            });
+                // this.$store.dispatch('getUserInfo', res.data.sysUserInfo);
+                this.$store.dispatch('getUserInfo', {});
+            //   } else {
+            //     this.$message.error(res.data.message);
+            //   }
+            // })
+            // .catch(() => {
+            //   this.$message.error('请求失败！');
+            // });
         }
       });
     },
     async routes() {
-      const res = await HTTP.routes();
+      // const res = await HTTP.routes();
+      const res = {};
+      res.data = db;
+      console.log(res);
       this.$store.dispatch('getMenus', res.data.routes);
       this.$store.dispatch('getButtons', res.data.userButtons);
       this.$store.commit('setActiveMenu', { actKey: [0], id: res.data.routes[0].id });

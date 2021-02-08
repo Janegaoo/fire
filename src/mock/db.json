@@ -1,25 +1,31 @@
 {
 	"routes": [
-			{
-					"id": 1,
-					"parentId": 0,
-					"code": "home",
-					"name": "首页",
-					"alias": null,
-					"path": "/main/home",
-					"source": "home",
-					"sort": 1,
-					"category": 1,
-					"action": null,
-					"isOpen": null,
-					"remark": null,
-					"children": null
-			},
-			{
-					"id": 2,
-					"parentId": 0,
+		{
+			"id": 1,
+			"parentId": 0,
+			"code": "home",
+			"name": "监控大屏",
+			"alias": null,
+			"path": "/main/home",
+			"source": "home",
+			"sort": 1,
+			"category": 1,
+			"action": null,
+			"isOpen": null,
+			"remark": null,
+			"children": null
+		},
+		{
+			"id": 2,
+			"parentId": 0,
+			"code": "user",
+			"name": "出警管理",
+			"source": "user",
+			"children": [
+				{
+					"parentId": 2,
 					"code": "user",
-					"name": "用户列表",
+					"name": "警情管理",
 					"alias": null,
 					"path": "/main/userList",
 					"source": "user",
@@ -29,66 +35,518 @@
 					"isOpen": null,
 					"remark": null,
 					"children": null
-			},
-			{
-					"id": 3,
-					"parentId": 0,
-					"code": "pics",
-					"name": "图集作品",
+				},
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "调度管理",
 					"alias": null,
-					"path": "/main/pics",
-					"source": "picture",
-					"sort": 3,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
 					"category": 1,
 					"action": null,
 					"isOpen": null,
 					"remark": null,
-					"children": null
-			},
-			{
-					"id": 4,
-					"parentId": 0,
-					"code": "codeManage",
-					"name": "兑换码管理",
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "调度大屏",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						},
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "站区协作弹窗",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": 3,
+			"parentId": 0,
+			"code": "pics",
+			"name": "站区管理",
+			"alias": null,
+			"path": "/main/pics",
+			"source": "picture",
+			"sort": 3,
+			"category": 1,
+			"action": null,
+			"isOpen": null,
+			"remark": null,
+			"children": [
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "站点管理",
 					"alias": null,
-					"path": "/main/codeList",
-					"source": "qrcode",
-					"sort": 4,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
 					"category": 1,
 					"action": null,
 					"isOpen": null,
 					"remark": null,
-					"children": null
-			},
-			{
-					"id": 5,
-					"parentId": 0,
-					"code": "distributor",
-					"name": "分享商管理",
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "消防站详情",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						},
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "消防车管理",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null,
+							"children": [
+								{
+									"parentId": 2,
+									"code": "user",
+									"name": "消防车详情",
+									"alias": null,
+									"path": "/main/userList",
+									"source": "user",
+									"sort": 2,
+									"category": 1,
+									"action": null,
+									"isOpen": null,
+									"remark": null
+								}
+							]
+						},
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "消防人员管理",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null,
+							"children": [
+								{
+									"parentId": 2,
+									"code": "user",
+									"name": "消防人员详情",
+									"alias": null,
+									"path": "/main/userList",
+									"source": "user",
+									"sort": 2,
+									"category": 1,
+									"action": null,
+									"isOpen": null,
+									"remark": null
+								}
+							]
+						},
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "排班计划管理",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						},
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "点检计划管理",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				},
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "站组管理",
 					"alias": null,
-					"path": "/main/distributorList",
-					"source": "team",
-					"sort": 5,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
 					"category": 1,
 					"action": null,
 					"isOpen": null,
 					"remark": null,
-					"children": null
-			},
-			{
-				"id": 6,
-				"parentId": 0,
-				"code": "message",
-				"name": "消息管理",
-				"alias": null,
-				"path": "/main/messageList",
-				"source": "message",
-				"sort": 5,
-				"category": 1,
-				"action": null,
-				"isOpen": null,
-				"remark": null,
-				"children": null
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "站组详情",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": 4,
+			"parentId": 0,
+			"code": "codeManage",
+			"name": "车型管理",
+			"alias": null,
+			"path": "/main/codeList",
+			"source": "qrcode",
+			"sort": 4,
+			"category": 1,
+			"action": null,
+			"isOpen": null,
+			"remark": null,
+			"children": [
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "基础配置管理",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null
+				},
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "车辆库管理",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null,
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "车辆库详情",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": 5,
+			"parentId": 0,
+			"code": "distributor",
+			"name": "消息管理",
+			"alias": null,
+			"path": "/main/distributorList",
+			"source": "team",
+			"sort": 5,
+			"category": 1,
+			"action": null,
+			"isOpen": null,
+			"remark": null,
+			"children": [
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "消息管理",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null
+				}
+			]
+		},
+		{
+			"id": 6,
+			"parentId": 0,
+			"code": "message",
+			"name": "数据管理",
+			"alias": null,
+			"path": "/main/messageList",
+			"source": "message",
+			"sort": 5,
+			"category": 1,
+			"action": null,
+			"isOpen": null,
+			"remark": null,
+			"children": [
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "出警记录",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null,
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "出警详情",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				},
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "维护报告",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null,
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "维护详情",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				},
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "轨迹查询",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null,
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "轨迹地图",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": 6,
+			"parentId": 0,
+			"code": "message",
+			"name": "系统管理",
+			"alias": null,
+			"path": "/main/messageList",
+			"source": "message",
+			"sort": 5,
+			"category": 1,
+			"action": null,
+			"isOpen": null,
+			"remark": null,
+			"children": [
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "用户管理",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null,
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "用户详情",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				},
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "权限管理",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null
+				},
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "协作管理",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null,
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "协作详情",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"id": 6,
+			"parentId": 0,
+			"code": "message",
+			"name": "客户管理",
+			"alias": null,
+			"path": "/main/messageList",
+			"source": "message",
+			"sort": 5,
+			"category": 1,
+			"action": null,
+			"isOpen": null,
+			"remark": null,
+			"children": [
+				{
+					"parentId": 2,
+					"code": "user",
+					"name": "客户管理",
+					"alias": null,
+					"path": "/main/userList",
+					"source": "user",
+					"sort": 2,
+					"category": 1,
+					"action": null,
+					"isOpen": null,
+					"remark": null,
+					"children": [
+						{
+							"parentId": 2,
+							"code": "user",
+							"name": "客户详情",
+							"alias": null,
+							"path": "/main/userList",
+							"source": "user",
+							"sort": 2,
+							"category": 1,
+							"action": null,
+							"isOpen": null,
+							"remark": null
+						}
+					]
+				}
+			]
 		}
 	],
 	"userButtons": [
@@ -110,7 +568,8 @@
 			"categoryName": "",
 			"actionName": "",
 			"isOpenName": ""
-		}, {
+		},
+		{
 			"id": 58,
 			"parentId": 6,
 			"code": "btn_edit",
@@ -128,7 +587,8 @@
 			"categoryName": "",
 			"actionName": "",
 			"isOpenName": ""
-		}, {
+		},
+		{
 			"id": 59,
 			"parentId": 6,
 			"code": "btn_delete",

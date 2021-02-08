@@ -1,24 +1,52 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-12 14:22:53
- * @LastEditors: Jane
- * @LastEditTime: 2020-08-17 09:53:21
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-08 11:34:15
  * @Descripttion:
 -->
 <template>
   <a-layout id="components-layout-demo-custom-trigger" class="layout">
-    <a-layout-sider v-model="collapsed" :trigger="null" collapsed>
+    <a-layout-sider width=230 v-model="collapsed" :trigger="null" collapsed>
       <!-- <div class="logo" /> -->
       <svg-icon
         :iconName="!collapsed ? 'bigLogo' : 'smallLogo' "
         :class="!collapsed ? 'icon-logo-big' : 'icon-logo-small'"
       />
-      <a-menu theme="dark" mode="inline" @click="menuClick" :default-selected-keys="defaultSelectedkeys">
-        <a-menu-item :key="i" v-for="(v, i) in getMenus" :attr-path="v.path" :attr-id="v.id">
-          <a-icon :type="v.source" />
-          <span>{{ v.name }}</span>
-        </a-menu-item>
+      <a-menu
+        mode="inline"
+        theme="dark"
+        @click="menuClick" :default-selected-keys="defaultSelectedkeys"
+      >
+        <template v-for="(v, i) in getMenus">
+          <a-menu-item v-if="!v.children" :key="i" :attr-path="v.path" :attr-id="v.id">
+            <a-icon :type="v.source" />
+            <span>{{ v.name }}</span>
+          </a-menu-item>
+          <sub-menu v-else :key="i" :menu-info="v">
+          </sub-menu>
+        </template>
       </a-menu>
+      <!-- <a-menu theme="dark" mode="inline" @click="menuClick" :default-selected-keys="defaultSelectedkeys">
+        <template v-for="(v, i) in getMenus">
+          <a-menu-item v-if="!v.children" :key="i" :attr-path="v.path" :attr-id="v.id">
+            <a-icon :type="v.source" />
+            <span>{{ v.name }}</span>
+          </a-menu-item>
+          <a-sub-menu v-if="v.children" :key="i">
+            <span slot="title">
+              <a-icon :type="v.source" />
+              <span>{{ v.name }}</span>
+            </span>
+            <template v-for="(c1v, c1i) in v.children">
+              <a-menu-item :key="c1i" :attr-path="c1v.path" :attr-id="c1v.id">
+                <a-icon :type="c1v.source" />
+                <span>{{ c1v.name }}</span>
+              </a-menu-item>
+            </template>
+          </a-sub-menu>
+        </template>
+      </a-menu> -->
     </a-layout-sider>
     <a-layout>
       <a-layout-header style="background: #fff; padding: 0">
@@ -53,6 +81,37 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
+import { Menu } from 'ant-design-vue';
+
+
+const SubMenu = {
+  template: `
+      <a-sub-menu :key="menuInfo.id" v-bind="$props" v-on="$listeners">
+        <span slot="title">
+          <a-icon :type="menuInfo.source" /><span>{{ menuInfo.name }}</span>
+        </span>
+        <template v-for="item in menuInfo.children">
+          <a-menu-item v-if="!item.children" :key="item.id">
+            <a-icon :type="item.source" />
+            <span>{{ item.name }}</span>
+          </a-menu-item>
+          <sub-menu v-else :key="item.id" :menu-info="item" />
+        </template>
+      </a-sub-menu>
+    `,
+  name: 'SubMenu',
+  // must add isSubMenu: true
+  isSubMenu: true,
+  props: {
+    ...Menu.SubMenu.props,
+    // Cannot overlap with properties within Menu.SubMenu.props
+    menuInfo: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+};
+
 
 export default {
   data() {
@@ -60,6 +119,9 @@ export default {
       defaultSelectedkeys: (this.getActiveMenu && this.getActiveMenu.actKey) || [0],
       collapsed: false,
     };
+  },
+  components: {
+    'sub-menu': SubMenu,
   },
   computed: {
     ...mapGetters(['getUserInfo', 'getMenus', 'getActiveMenu']),
@@ -73,9 +135,11 @@ export default {
     this.defaultSelectedkeys = this.getActiveMenu && this.getActiveMenu.actKey;
   },
   mounted() {
-    if (!this.getUserInfo.id) {
-      this.$router.push({ name: 'Login' });
-    }
+    console.log(this.getMenus);
+    // todo
+    // if (!this.getUserInfo.id) {
+    //   this.$router.push({ name: 'Login' });
+    // }
   },
   methods: {
     menuClick(item) {
@@ -172,4 +236,10 @@ export default {
 .logout {
   cursor: pointer;
 }
+</style>
+<style lang="scss">
+  .ant-menu.ant-menu-dark .ant-menu-item-selected,
+  .ant-menu-submenu-popup.ant-menu-dark .ant-menu-item-selected {
+    background-color: transparent;
+  }
 </style>
