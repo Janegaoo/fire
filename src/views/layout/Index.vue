@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-12 14:22:53
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-08 11:34:15
+ * @LastEditTime: 2021-02-10 13:36:11
  * @Descripttion:
 -->
 <template>
@@ -91,7 +91,7 @@ const SubMenu = {
           <a-icon :type="menuInfo.source" /><span>{{ menuInfo.name }}</span>
         </span>
         <template v-for="item in menuInfo.children">
-          <a-menu-item v-if="!item.children" :key="item.id">
+          <a-menu-item v-if="!item.children" :key="item.id" :attr-path="item.path" :attr-id="item.id">
             <a-icon :type="item.source" />
             <span>{{ item.name }}</span>
           </a-menu-item>
@@ -143,6 +143,7 @@ export default {
   },
   methods: {
     menuClick(item) {
+      console.log(item.item.$el.getAttribute('attr-id'));
       this.$store.commit('setActiveMenu', { actKey: [item.key], id: item.item.$el.getAttribute('attr-id') });
       this.$router.push({
         path: item.item.$el.getAttribute('attr-path'),

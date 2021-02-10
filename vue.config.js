@@ -29,7 +29,7 @@ module.exports = {
       less: {
         lessOptions: {
           modifyVars: {
-            'primary-color': '#f03947', // 全局主色
+            // 'primary-color': 'rgba(252, 96, 54, 1)', // 全局主色
             'link-color': '#1DA57A', // 链接色
             'border-radius-base': '2px', // 组件/浮层圆角
             'success-color': '#52c41a', // 成功色

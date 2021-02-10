@@ -1,8 +1,8 @@
 /*
  * @Author: Jane
  * @Date: 2020-06-10 09:00:30
- * @LastEditors: Yawen
- * @LastEditTime: 2020-09-09 11:22:40
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-10 13:33:28
  * @Descripttion:
  */
 import Vue from 'vue';
