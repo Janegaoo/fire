@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 13:18:08
+ * @LastEditTime: 2021-02-22 13:40:28
  * @Descripttion:
 -->
 
@@ -12,42 +12,8 @@
       <a-row>
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
-            <a-form-model-item label="站点名称">
-              <a-input v-model="站点名称" placeholder="请输入站点名称" />
-            </a-form-model-item>
-            <a-form-model-item label="联系人">
-              <a-input v-model="站点名称" placeholder="请输入联系人电话" />
-            </a-form-model-item>
-            <a-form-model-item label="站点编号">
-              <a-input v-model="站点名称" placeholder="请输入站点编号" />
-            </a-form-model-item>
-            <a-form-model-item label="站点地">
-              <a-input-group compact>
-                <a-select default-value="Option1-1">
-                  <a-select-option value="Option1-1">
-                    Option1-1
-                  </a-select-option>
-                  <a-select-option value="Option1-2">
-                    Option1-2
-                  </a-select-option>
-                </a-select>
-                <a-select default-value="Option2-2">
-                  <a-select-option value="Option2-1">
-                    Option2-1
-                  </a-select-option>
-                  <a-select-option value="Option2-2">
-                    Option2-2
-                  </a-select-option>
-                </a-select>
-                <a-select default-value="Option2-2">
-                  <a-select-option value="Option2-1">
-                    Option2-1
-                  </a-select-option>
-                  <a-select-option value="Option2-2">
-                    Option2-2
-                  </a-select-option>
-                </a-select>
-              </a-input-group>
+            <a-form-model-item label="消防车编号">
+              <a-input v-model="站点名称" placeholder="消防车型号" />
             </a-form-model-item>
           </a-form-model>
         </a-col>
@@ -58,12 +24,10 @@
     </a-card>
     <div class="pic-list">
       <a-row>
-        <a-col :span="12" class="left">站点管理</a-col>
+        <a-col :span="12" class="left">基础配置管理</a-col>
         <a-col :span="12" class="right">
           <a-button type="primary" class="btn" icon="plus" @click="add">添加</a-button>
-          <a-button type="danger" class="btn" icon="minus" @click="del">删除</a-button>
           <a-button type="primary" class="btn green" icon="download" @click="expor">导出</a-button>
-          <a-button type="primary" class="btn green" icon="download" @click="info">详情</a-button>
         </a-col>
       </a-row>
       <a-table
@@ -77,34 +41,14 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="站点名称" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="消防车编号" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="地址" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="消防车型号" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage}}</span>
-          </template>
-        </a-table-column>
-        <a-table-column key="headImage" title="联系人" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
-          </template>
-        </a-table-column>
-        <a-table-column key="bindStatus" title="联系电话" data-index="bindStatus" :width="110">
-          <template slot-scope="bindStatus">
-            <span :style="bindStatus? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{bindStatus ? '已绑定' : '未绑定'}}</span>
-          </template>
-        </a-table-column>
-        <a-table-column key="packageName" title="消防车" data-index="packageName" :width="110">
-          <template slot-scope="packageName">
-            <span :style="packageName? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{packageName || '免费用户'}}</span>
-          </template>
-        </a-table-column>
-        <a-table-column key="headImage" title="消防员" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
           </template>
         </a-table-column>
         <a-table-column key="action" title="操作" :width="80">
@@ -117,7 +61,7 @@
         </a-table-column>
       </a-table>
     </div>
-    <pop v-if="showPop" ref="editChild" :companyId="companyId" :companyName="companyName" :comments="comments" @on-confirm="onConfirm" @on-cancel="onCancel"></pop>
+    <group-pop v-if="showPop" ref="editChild" :companyId="companyId" :companyName="companyName" :comments="comments" @on-confirm="onConfirm" @on-cancel="onCancel"></group-pop>
   </div>
 </template>
 
@@ -125,14 +69,14 @@
 // @ is an alias to /src
 import HTTP from '@/api/pics';
 import PageInfo from '@/utils/page';
-import Pop from './componets/Pop.vue';
+import GroupPop from './componets/Pop.vue';
 
 
 export default {
   name: 'UserList',
   props: [],
   components: {
-    Pop,
+    GroupPop,
   },
   data() {
     return {
