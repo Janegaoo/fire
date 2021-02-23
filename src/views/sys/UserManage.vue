@@ -2,47 +2,38 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 15:18:25
+ * @LastEditTime: 2021-02-22 14:40:47
  * @Descripttion:
 -->
 
 <template>
   <div class="main">
     <a-card style="margin-bottom: 8px;" :bordered="false" :bodyStyle="{padding: '16px 32px'}">
-      <!-- <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
-        <a-select placeholder="请选择查询类型" v-model="formInline.searchType" style="margin-right:8px; width: 160px">
-          <a-select-option value="id">作品ID</a-select-option>
-          <a-select-option value="userId">用户ID</a-select-option>
-          <a-select-option value="colTitle">作品标题</a-select-option>
-          <a-select-option value="nickName">用户昵称</a-select-option>
-        </a-select>
-        <a-input v-model="formInline.searchValue" type="text" placeholder="请输入查询内容" style="width: 320px; margin-right: 8px" />
-        <a-button type="primary" style="margin-right: 8px" @click="handleSubmit">查询</a-button>
-        <a-button type="defult" @click="resetFn()">重置</a-button>
-      </a-form-model> -->
       <a-row>
         <a-col :span="22">
-          <span class="tit">报警时</span>
-          <a-range-picker
-            :disabled-date="disabledDate"
-            :disabled-time="disabledRangeTime"
-            :show-time="{
-              hideDisabledOptions: true,
-              defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
-            }"
-            format="YYYY-MM-DD HH:mm:ss"
-          />
+          <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
+            <a-form-model-item label="登录名">
+              <a-input v-model="站点名称" placeholder="请输入登录名" />
+            </a-form-model-item>
+            <a-form-model-item label="消防站">
+              <a-select placeholder="请选择消防站" style="width: 200px">
+                <a-select-option value="0">上海虹桥站点</a-select-option>
+              </a-select>
+            </a-form-model-item>
+          </a-form-model>
         </a-col>
         <a-col :span="2">
-          <a-button type="primary" class="blueBtn">
-            搜索
-          </a-button>
+          <a-button type="primary" class="blueBtn" @click="handleSubmit">搜索</a-button>
         </a-col>
       </a-row>
     </a-card>
     <div class="pic-list">
       <a-row>
-        <a-col :span="12" class="left">图集作品</a-col>
+        <a-col :span="12" class="left">轨迹查询</a-col>
+        <a-col :span="12" class="right">
+          <a-button type="primary" class="btn" icon="plus" @click="add">添加</a-button>
+          <a-button type="danger" class="btn" icon="minus" @click="del">删除</a-button>
+        </a-col>
       </a-row>
       <a-table
         :data-source="tableData"
@@ -55,39 +46,34 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="火警编号" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="用户名" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="火警状态" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="登录名" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="报警时间" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="手机号" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage | dateFormat}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="bindStatus" title="报警人" data-index="bindStatus" :width="110">
+        <a-table-column key="bindStatus" title="归属" data-index="bindStatus" :width="110">
           <template slot-scope="bindStatus">
             <span :style="bindStatus? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{bindStatus ? '已绑定' : '未绑定'}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="packageName" title="报警人手机号" data-index="packageName" :width="110">
-          <template slot-scope="packageName">
-            <span :style="packageName? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{packageName || '免费用户'}}</span>
-          </template>
-        </a-table-column>
-        <a-table-column key="headImage" title="操作时间" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="用户角色" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage | dateFormat}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="albumCount" title="备注" data-index="albumCount" :width="110">
-          <template slot-scope="albumCount">
-            <span>{{albumCount}}</span>
+        <a-table-column key="headImage" title="注册时间" data-index="headImage" :width="75" align="center">
+          <template slot-scope="headImage">
+            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
           </template>
         </a-table-column>
         <a-table-column key="action" title="操作" :width="80">
@@ -100,20 +86,23 @@
         </a-table-column>
       </a-table>
     </div>
+    <pop v-if="showPop" ref="editChild" :companyId="companyId" :companyName="companyName" :comments="comments" @on-confirm="onConfirm" @on-cancel="onCancel"></pop>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-// web key 402cededf35f8b7b83d156e177eb6f1a
 import HTTP from '@/api/pics';
 import PageInfo from '@/utils/page';
 import moment from 'moment';
+import Pop from './componets/Pop.vue';
+
 
 export default {
   name: 'UserList',
   props: [],
   components: {
+    Pop,
   },
   data() {
     return {
@@ -123,6 +112,10 @@ export default {
       tableData: [],
       pagination: new PageInfo(this.pageChange, this.onShowSizeChange),
       params: {},
+      showPop: false,
+      companyId: '',
+      companyName: '',
+      comments: '',
     };
   },
   mounted() {
@@ -164,6 +157,19 @@ export default {
         disabledMinutes: () => this.range(0, 31),
         disabledSeconds: () => [55, 56],
       };
+    },
+    add() {
+      this.showPop = true;
+    },
+    del() {
+      console.log('del');
+    },
+    expor() {
+      console.log('export');
+    },
+    info() {
+      console.log('info');
+      this.$router.push({ name: 'StationInfo', query: {} });
     },
     handleSubmit() {
       console.log(this.formInline);
@@ -238,6 +244,12 @@ export default {
     padding-right: 20px;
     display: inline-block;
   }
+  .pos {
+    text-align: center;
+    div {
+      font-size: 12px;
+    }
+  }
   .pic-list {
     background-color: #fff;
     margin-top: 10px;
@@ -248,6 +260,20 @@ export default {
       color: #001529;
       font-size: 18px;
       padding: 16px 32px;
+    }
+    .right {
+      text-align: right;
+      // color: #001529;
+      // font-size: 18px;
+      padding-top: 16px;
+    }
+    .btn {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+    .green {
+      background: green;
+      border: 1px solid green;
     }
   }
 }

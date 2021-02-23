@@ -59,7 +59,7 @@ module.exports = {
     },
     proxy: {
       '/api': { // 这里最好有一个 /
-        target: 'http://192.168.12.181:18088/hz-admin', // 后台接口域名
+        target: 'http://dev.fire.njyunzhi.com/api/', // 后台接口域名
         // target: 'http://192.168.12.98:8083/', // zhichun
         // target: 'http://192.168.12.55:8082/', // maenliang
         ws: true, // 如果要代理 websockets，配置这个参数
