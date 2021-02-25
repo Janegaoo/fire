@@ -1,8 +1,8 @@
 /*
  * @Author: Jane
  * @Date: 2020-06-10 09:00:30
- * @LastEditors: Jane
- * @LastEditTime: 2020-08-06 21:06:10
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-23 10:20:05
  * @Descripttion:
  */
 import Vue from 'vue';
@@ -29,6 +29,8 @@ export default new Vuex.Store({
   },
   mutations: {
     setUserInfo(state, userInfo) {
+      console.log('-----');
+      console.log(userInfo);
       state.userInfo = userInfo;
     },
     setMenus(state, menus) {

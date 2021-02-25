@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-10 09:00:30
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-10 13:33:28
+ * @LastEditTime: 2021-02-23 16:59:36
  * @Descripttion:
  */
 import Vue from 'vue';
@@ -11,7 +11,6 @@ import 'ant-design-vue/dist/antd.less';
 // @import './antd-theme.scss';
 // import 'ant-design-vue/dist/antd.css';
 // ant-design-vue/dist/antd.less
-
 import * as filter from '@/utils/fliters';
 // import echarts from 'echarts';
 import App from './App.vue';

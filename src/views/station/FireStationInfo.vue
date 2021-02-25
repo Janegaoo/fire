@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 13:18:08
+ * @LastEditTime: 2021-02-25 11:15:43
  * @Descripttion:
 -->
 
@@ -13,13 +13,13 @@
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
             <a-form-model-item label="站点名称">
-              <a-input v-model="站点名称" placeholder="请输入站点名称" />
+              <a-input v-model="name" placeholder="请输入站点名称" />
             </a-form-model-item>
             <a-form-model-item label="联系人">
-              <a-input v-model="站点名称" placeholder="请输入联系人电话" />
+              <a-input v-model="contactMobile" placeholder="请输入联系人电话" />
             </a-form-model-item>
             <a-form-model-item label="站点编号">
-              <a-input v-model="站点名称" placeholder="请输入站点编号" />
+              <a-input v-model="number" placeholder="请输入站点编号" />
             </a-form-model-item>
             <a-form-model-item label="站点地">
               <a-input-group compact>
@@ -63,10 +63,10 @@
           <a-button type="primary" class="btn" icon="plus" @click="add">添加</a-button>
           <a-button type="danger" class="btn" icon="minus" @click="del">删除</a-button>
           <a-button type="primary" class="btn green" icon="download" @click="expor">导出</a-button>
-          <a-button type="primary" class="btn green" icon="download" @click="info">详情</a-button>
         </a-col>
       </a-row>
       <a-table
+        :row-selection="{ type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :data-source="tableData"
         :rowKey="(record, index) => index"
         :pagination="pagination"
@@ -74,45 +74,54 @@
         @change="handleChange">
         <a-table-column key="id" title="序号" data-index="id" :width="88">
           <template slot-scope="id">
-            <span style="padding-left:20px">{{id}}</span>
+            <span>{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="站点名称" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage}}</span>
+        <a-table-column key="number" title="站点编号" data-index="number" align="center">
+          <template slot-scope="number">
+            <span>{{number}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="地址" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage}}</span>
+        <a-table-column key="name" title="站点名称" data-index="name" align="center">
+          <template slot-scope="name">
+            <span>{{name}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="联系人" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="address" title="地址" data-index="address" align="center" :ellipsis=true>
+          <template slot-scope="address">
+            <a-tooltip placement="top">
+              <template slot="title">
+                <div class="addr">{{address}}</div>
+              </template>
+                <div class="addr">{{address}}</div>
+            </a-tooltip>
           </template>
         </a-table-column>
-        <a-table-column key="bindStatus" title="联系电话" data-index="bindStatus" :width="110">
-          <template slot-scope="bindStatus">
-            <span :style="bindStatus? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{bindStatus ? '已绑定' : '未绑定'}}</span>
+        <a-table-column key="contactPerson" title="联系人" data-index="contactPerson" :width="90" align="center">
+          <template slot-scope="contactPerson">
+            <span>{{contactPerson}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="packageName" title="消防车" data-index="packageName" :width="110">
-          <template slot-scope="packageName">
-            <span :style="packageName? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{packageName || '免费用户'}}</span>
+        <a-table-column key="contactMobile" title="联系电话"  :width="120" data-index="contactMobile">
+          <template slot-scope="contactMobile">
+            <span>{{contactMobile}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="消防员" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="fireengineCount" data-index="fireengineCount" title="消防车" :width="80">
+          <template slot-scope="fireengineCount">
+            <span>{{fireengineCount}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="action" title="操作" :width="80">
+        <a-table-column key="firemanCount" title="消防员"  :width="80" data-index="firemanCount" align="center">
+          <template slot-scope="firemanCount">
+            <span>{{firemanCount}}</span>
+          </template>
+        </a-table-column>
+        <a-table-column key="action" title="操作" :width="220">
           <template slot-scope="record">
-            <span class="eye-w" @click="infoFn(record)">
-              <svg-icon iconName="view" class="eye" />
-              <span class="action">详情</span>
-            </span>
+            <a-button type="primary" icon="eye" class="sbtn" size="small" @click="info(record)">查看</a-button>
+            <a-button type="primary" class="sbtn orange" size="small" @click="edit(record)">编辑</a-button>
+            <a-button type="primary" class="sbtn red" size="small" @click="disable(record)">禁用</a-button>
           </template>
         </a-table-column>
       </a-table>
@@ -123,7 +132,8 @@
 
 <script>
 // @ is an alias to /src
-import HTTP from '@/api/pics';
+// http://dev.fire.njyunzhi.com/api/firestations/firehouses/list
+import HTTP from '@/api/station';
 import PageInfo from '@/utils/page';
 import Pop from './componets/Pop.vue';
 
@@ -146,31 +156,74 @@ export default {
       companyId: '',
       companyName: '',
       comments: '',
+      contactMobile: '',
+      region: '',
+      city: '',
+      province: '',
+      number: '',
+      name: '',
+      selectedRowKeys: [],
+      selectedRows: [],
     };
   },
   mounted() {
     this.getData();
+    // const map = new AMap.Map('container', {
+    //   zoom: 12,
+    // });
   },
   methods: {
+    onSelectChange(selectedRowKeys, selectedRows) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      console.log(selectedRows);
+      this.selectedRows = selectedRows;
+      this.selectedRowKeys = selectedRowKeys;
+    },
     add() {
       this.showPop = true;
     },
     del() {
       console.log('del');
+      const params = {
+        id: this.selectedRows[0].id,
+      };
+      HTTP.delFirehouses(params)
+        .then((res) => {
+          if (res.status === 200) {
+            this.$message.success(res.data.message);
+            this.getData();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .catch((res) => {
+          this.$message.error(res.message);
+        });
     },
     expor() {
       console.log('export');
     },
     info() {
       console.log('info');
-      this.$router.push({ name: 'StationInfo', query: {} });
+      this.$router.push({ name: 'StationInfo', query: { tab: 1, type: 1 } });
+    },
+    disable() {
+
+    },
+    edit(v) {
+      console.log(v);
+      localStorage.setItem('stationList', JSON.stringify(v));
+      this.$router.push({ name: 'StationInfo', query: { tab: 1, type: 2 } });
+    },
+    onConfirm() {
+      this.showPop = false;
+      this.getData();
+    },
+    onCancel() {
+      this.showPop = false;
     },
     handleSubmit() {
       console.log(this.formInline);
-      // id
-      // userId
-      // colTitle
-      // nickName
       this.params = {};
       this.params[this.formInline.searchType] = this.formInline.searchValue;
       this.getData();
@@ -182,20 +235,22 @@ export default {
     },
     getData() {
       const params = {
-        page: this.pagination.current,
-        rows: this.pagination.pageSize,
+        pageNo: this.pagination.current,
+        pageSize: this.pagination.pageSize,
         order: this.params.order,
-        sort: this.params.sort,
-        id: this.params.id,
-        userId: this.params.userId,
-        colTitle: this.params.colTitle,
-        nickName: this.params.nickName,
+        // sort: 'ASC',
+        name: this.name,
+        address: this.address,
+        contactPerson: this.contactPerson,
+        contactMobile: this.contactMobile,
+        // longitude: this.longitude,
+        // latitude: this.latitude,
       };
-      HTTP.getSearchAlbumInfo(params)
+      HTTP.firehouses(params)
         .then((res) => {
-          if (res.data.status === 200) {
-            this.tableData = res.data.rows;
-            this.pagination.total = res.data.records;
+          if (res.status === 200) {
+            this.tableData = res.data.data;
+            this.pagination.total = res.data.totalCount;
           } else {
             this.$message.error(res.data.message);
           }
@@ -234,6 +289,13 @@ export default {
   margin-top: 16px;
   margin-left: 16px;
   margin-right: 16px;
+  .addr {
+    font-size: 14px;
+    color: #001529;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .tit {
     padding-right: 20px;
     display: inline-block;
@@ -258,6 +320,18 @@ export default {
     .btn {
       margin-left: 10px;
       margin-right: 10px;
+    }
+    .sbtn {
+      margin-left: 4px;
+      margin-right: 4px;
+    }
+    .orange {
+      background: rgba(252, 96, 54, 1);
+      border: 1px solid rgba(252, 96, 54, 1);
+    }
+    .red {
+      background: rgba(162, 20, 20, 1);
+      border: 1px solid rgba(162, 20, 20, 1);
     }
     .green {
       background: green;

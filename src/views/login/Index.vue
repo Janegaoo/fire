@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-05 14:51:26
+ * @LastEditTime: 2021-02-23 10:44:10
  * @Descripttion:
 -->
 
@@ -62,7 +62,8 @@
 
 <script>
 // @ is an alias to /src
-import AesUtil from '@/utils/aesUtil';
+// import AesUtil from '@/utils/aesUtil';
+import md5 from 'js-md5';
 import HTTP from '@/api/login';
 import db from '@/mock/db.json';
 
@@ -91,25 +92,26 @@ export default {
     submitFn() {
       this.form.validateFields((err, values) => {
         if (!err) {
-          const AesPwd = AesUtil.Encrypt(values.password, 1);
+          // const AesPwd = AesUtil.Encrypt(values.password, 1);
           const params = {
-            account: values.account,
-            password: AesPwd,
+            loginName: values.account,
+            password: md5(values.password),
           };
-          // todo
-          // HTTP.sysUserLogin(params)
-          //   .then((res) => {
-          //     if (res.data.status === 200) {
+          // zhangeryue 123456
+          HTTP.login(params)
+            .then((res) => {
+              if (res.status === 200) {
                 this.routes();
-                // this.$store.dispatch('getUserInfo', res.data.sysUserInfo);
-                this.$store.dispatch('getUserInfo', {});
-            //   } else {
-            //     this.$message.error(res.data.message);
-            //   }
-            // })
-            // .catch(() => {
-            //   this.$message.error('请求失败！');
-            // });
+                console.log(res.data);
+                this.$store.dispatch('getUserInfo', res.data);
+                // this.$store.dispatch('getUserInfo', {});
+              } else {
+                this.$message.error(res.data.message);
+              }
+            })
+            .catch(() => {
+              this.$message.error('请求失败！');
+            });
         }
       });
     },

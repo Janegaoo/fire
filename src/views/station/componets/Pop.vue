@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 09:51:50
+ * @LastEditTime: 2021-02-24 10:32:01
  * @Descripttion:
 -->
 <template>
@@ -26,27 +26,46 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item label="站点名称" prop="companyName" placeholder="请输入站点名称">
-          <a-input v-model="form.companyName" />
+        <a-form-model-item label="站点名称" prop="name" placeholder="请输入站点名称">
+          <a-input v-model="form.name" />
         </a-form-model-item>
-        <a-form-model-item label="站点地址" prop="companyName" placeholder="请输入站点地址">
-          <a-input v-model="form.companyName" />
+        <a-form-model-item label="站点编号" prop="number" placeholder="请输入站点编号">
+          <a-input v-model="form.number" />
         </a-form-model-item>
-        <a-form-model-item label="站点联系人" prop="companyName" placeholder="请输入站点联系人名称">
-          <a-input v-model="form.companyName" />
+        <a-form-model-item label="站点地址" prop="address" placeholder="请输入站点地址">
+          <a-input v-model="form.address" />
         </a-form-model-item>
-        <a-form-model-item label="联系电话" prop="companyName" placeholder="请输入联系人电话">
-          <a-input v-model="form.companyName" />
+        <a-form-model-item label="站点联系人" prop="contactPerson" placeholder="请输入站点联系人名称">
+          <a-input v-model="form.contactPerson" />
+        </a-form-model-item>
+        <a-form-model-item label="联系电话" prop="contactMobile" placeholder="请输入联系人电话">
+          <a-input v-model="form.contactMobile" />
+        </a-form-model-item>
+        <a-form-model-item label="经纬度" prop="itude" placeholder="点击选择地理位置">
+          <a-input v-model="form.itude" readOnly>
+            <a-icon @click="posFn" slot="suffix" type="environment" style="color: rgba(0,0,0,.45)" />
+          </a-input>
         </a-form-model-item>
         <!-- <a-form-model-item label="备注" prop="comments" placeholder="请输入备注信息">
           <a-input v-model="form.comments" type="textarea" />
         </a-form-model-item> -->
       </a-form-model>
     </a-modal>
+    <a-drawer
+      title="Basic Drawer"
+      placement="right"
+      width="800"
+      :closable="false"
+      :visible="showMap"
+      :after-visible-change="afterVisibleChange"
+      @close="onClose"
+    >
+      <div id="l-container" style="width: 800px; height: 800px;"></div>
+    </a-drawer>
   </div>
 </template>
 <script>
-import HTTP from '@/api/distributor';
+import HTTP from '@/api/station';
 
 export default {
   props: [
@@ -54,9 +73,12 @@ export default {
     'comments',
     'companyId',
   ],
+  components: {
+  },
   data() {
     return {
       visible: true,
+      showMap: false,
       confirmLoading: false,
       form: {
         companyName: '',
@@ -95,6 +117,30 @@ export default {
     };
   },
   methods: {
+    posFn() {
+      this.showMap = true;
+    },
+    afterVisibleChange(val) {
+      console.log('visible', val);
+      const map = new AMap.Map('l-container', {
+        zoom: 12,
+      });
+      map.on('click', (e) => {
+        this.form.itude = `${e.lnglat.getLng()},${e.lnglat.getLat()}`;
+        this.form.longitude = e.lnglat.getLng();
+        this.form.latitude = e.lnglat.getLat();
+        this.showMap = false;
+      });
+    },
+    onClose() {
+      this.showMap = false;
+    },
+    // onConfirm() {
+    //   this.showMap = false;
+    // },
+    // onCancel() {
+    //   this.showMap = false;
+    // },
     showModal() {
       this.visible = true;
     },
@@ -104,18 +150,23 @@ export default {
           this.confirmLoading = true;
           if (!this.form.companyId) {
             const params = {
-              companyName: this.form.companyName,
-              comments: this.form.comments,
+              name: this.form.name,
+              address: this.form.address,
+              contactPerson: this.form.contactPerson,
+              contactMobile: this.form.contactMobile,
+              longitude: this.form.longitude,
+              latitude: this.form.latitude,
+              number: this.form.number,
             };
-            HTTP.createCompanyInfo(params)
+            HTTP.addFirehouses(params)
               .then((res) => {
                 this.confirmLoading = false;
-                if (res.data.status === 200) {
+                if (res.status === 200) {
                   this.$message.success(res.data.message);
                   this.visible = false;
                   this.$emit('on-confirm');
                 } else {
-                  this.$message.error(res.data.message);
+                  this.$message.error(res.message);
                 }
               })
               .catch((res) => {
@@ -124,9 +175,10 @@ export default {
               });
           } else {
             const params = {
-              companyName: this.form.companyName,
-              comments: this.form.comments,
-              id: this.form.companyId,
+              name: this.form.name,
+              address: this.form.address,
+              contactPerson: this.form.contactPerson,
+              contactMobile: this.form.contactMobile,
             };
             HTTP.updateCompanyInfo(params)
               .then((res) => {
