@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-25 11:15:43
+ * @LastEditTime: 2021-02-25 14:02:15
  * @Descripttion:
 -->
 
@@ -203,17 +203,16 @@ export default {
     expor() {
       console.log('export');
     },
-    info() {
-      console.log('info');
-      this.$router.push({ name: 'StationInfo', query: { tab: 1, type: 1 } });
+    info(v) {
+      this.$router.push({ name: 'StationInfo', query: { tab: 1, type: 2, id: v.id } });
     },
     disable() {
 
     },
     edit(v) {
       console.log(v);
-      localStorage.setItem('stationList', JSON.stringify(v));
-      this.$router.push({ name: 'StationInfo', query: { tab: 1, type: 2 } });
+      // localStorage.setItem('stationList', JSON.stringify(v));
+      this.$router.push({ name: 'StationInfo', query: { tab: 1, type: 2, id: v.id } });
     },
     onConfirm() {
       this.showPop = false;

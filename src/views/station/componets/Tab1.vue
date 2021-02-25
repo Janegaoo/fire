@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-25 10:58:25
+ * @LastEditTime: 2021-02-25 14:00:48
  * @Descripttion:
 -->
 <template>
@@ -41,7 +41,7 @@
         <span class="decoration">{{ this.form.firemanCount }}人</span>
       </a-form-model-item>
       <a-form-model-item label="用户数量">
-        <span class="decoration">{{  }}人</span>
+        <span class="decoration">{{ this.form.customerCount }}人</span>
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 8 }">
         <a-button @click="back()">取消</a-button>
@@ -76,6 +76,7 @@ export default {
       visible: true,
       confirmLoading: false,
       type: +this.$route.query.type,
+      id: +this.$route.query.id,
       form: {
         companyName: '',
         comments: '',
@@ -106,14 +107,14 @@ export default {
     },
   },
   beforeMount() {
-    const v = JSON.parse(localStorage.getItem('stationList'));
-    Object.keys(v).forEach((key) => {
-      this.form[key] = v[key];
-    });
-    this.form.itude = `${this.form.longitude},${this.form.latitude}`;
+    // const v = JSON.parse(localStorage.getItem('stationList'));
+    // Object.keys(v).forEach((key) => {
+    //   this.form[key] = v[key];
+    // });
+    // this.form.itude = `${this.form.longitude},${this.form.latitude}`;
   },
   mounted() {
-
+    this.getInfo();
   },
   methods: {
     posFn() {
@@ -170,6 +171,27 @@ export default {
             });
         }
       });
+    },
+    getInfo() {
+      const params = {
+        id: this.id,
+      };
+      HTTP.infoFirehouses(params)
+        .then((res) => {
+          if (res.status === 200) {
+            // Object.keys(v).forEach((key) => {
+            //   this.form[key] = v[key];
+            // });
+            this.form = res.data;
+            this.form.itude = `${this.form.longitude},${this.form.latitude}`;
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .catch((res) => {
+          this.confirmLoading = false;
+          this.$message.error(res.message);
+        });
     },
   },
 };

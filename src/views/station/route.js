@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-07-31 15:31:41
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 13:20:58
+ * @LastEditTime: 2021-02-25 13:40:14
  * @Descripttion:
  */
 const route = [
@@ -29,6 +29,14 @@ const route = [
       code: 'station',
     },
     component: () => import(/* webpackChunkName: "stationInfo" */ './componets/StationInfo.vue'),
+  },
+  {
+    path: 'fireInfo',
+    name: 'FireInfo',
+    meta: {
+      code: 'station',
+    },
+    component: () => import(/* webpackChunkName: "stationInfo" */ './componets/FireInfo.vue'),
   },
 ];
 
