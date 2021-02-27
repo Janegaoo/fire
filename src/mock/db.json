@@ -89,7 +89,7 @@
 					"code": "station",
 					"name": "站组管理",
 					"alias": null,
-					"path": "/main/StationGroup",
+					"path": "/main/stationGroup",
 					"source": "user",
 					"sort": 2,
 					"category": 1,

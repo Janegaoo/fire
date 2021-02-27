@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-25 15:14:37
+ * @LastEditTime: 2021-02-26 10:41:48
  * @Descripttion:
 -->
 <template>
@@ -24,38 +24,24 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item label="图片" prop="vin" placeholder="请输入站点名称">
-          <a-upload
-            name="avatar"
-            list-type="picture-card"
-            class="avatar-uploader"
-            :show-upload-list="false"
-            :before-upload="beforeUpload"
-            @change="handleChange"
-            accept=".bmp,.jpg,.png,.jpeg,.tif"
-          >
-            <img v-if="imageUrl" :src="imageUrl" class="head-img" alt="avatar" />
-            <div v-else>
-              <a-icon type="plus" style="color: #1890ff;" />
-              <div class="ant-upload-text">请选择图片</div>
-            </div>
-          </a-upload>
+        <a-form-model-item label="站组名称" prop="name" placeholder="请输入站组名称">
+          <a-input v-model="form.name" :disabled="type !== 1" />
         </a-form-model-item>
-        <a-form-model-item label="消防车型号" prop="vin" placeholder="请输入站点名称">
-          <a-input v-model="form.vin" :disabled="type === 1" />
+        <a-form-model-item label="地址" prop="address" placeholder="请输入地址">
+          <a-input v-model="form.address" :disabled="type !== 1" />
         </a-form-model-item>
-        <a-form-model-item label="消防车编号" prop="number" placeholder="请输入站点编号">
-          <a-input v-model="form.number" :disabled="type === 1" />
+        <a-form-model-item label="联系人" prop="contactPerson" placeholder="请输入联系人">
+          <a-input v-model="form.contactPerson" :disabled="type !== 1" />
         </a-form-model-item>
-        <a-form-model-item label="消防车车牌" prop="licensePlateNumber" placeholder="请输入地理位置">
-          <a-input v-model="form.licensePlateNumber" :disabled="type === 1" />
+        <a-form-model-item label="联系电话" prop="contactMobile" placeholder="请输入联系电话">
+          <a-input v-model="form.contactMobile" :disabled="type !== 1" />
         </a-form-model-item>
-        <a-form-model-item label="消防车描述" prop="description" placeholder="请输入联系人电话">
-          <a-textarea v-model="form.description" :disabled="type === 1" />
+        <a-form-model-item label="站点" prop="firehouses" placeholder="请输入站点">
+          <a-textarea v-model="form.firehouses" :disabled="type !== 1" />
         </a-form-model-item>
         <a-form-model-item :wrapper-col="{ span: 14, offset: 8 }">
           <a-button @click="back()">取消</a-button>
-          <a-button type="primary" style="margin-left: 40px;" @click="onSubmit" :disabled="type === 1">保存</a-button>
+          <a-button type="primary" style="margin-left: 40px;" @click="onSubmit" :disabled="type !== 1">保存</a-button>
         </a-form-model-item>
       </a-form-model>
     </div>
@@ -82,7 +68,6 @@ export default {
         companyName: '',
         comments: '',
       },
-      imageUrl: '',
       rules: {
         companyName: [{
           required: true, message: '请输入分销商名称', trigger: 'blur', whitespace: true,
@@ -121,29 +106,6 @@ export default {
     }
   },
   methods: {
-    beforeUpload(file) {
-      // this.imageInfo = this.getImageInfo(file);
-      // return false;
-    },
-    async handleChange(info) {
-      // console.log(info);
-      // const imgInfo = await this.getImageInfo(info.file);
-      const size = 1 * 1024 * 1024;
-      if (info.file.size > size) {
-        this.$message.error('单张图片大小不超过1M');
-      } else {
-        // this.getBase64(info.fileList[0].originFileObj, (imageUrl) => {
-        //   this.imageUrl = imageUrl;
-        // });
-        this.uploadMessagePicture({
-          sourceType: 0,
-          // sourceWidth: imgInfo.w,
-          // sourceHeight: imgInfo.h,
-          fileSize: info.file.size,
-          file: info.file,
-        }, 2);
-      }
-    },
     posFn() {
       if (this.type !== 1) {
         this.showMap = true;
@@ -179,12 +141,12 @@ export default {
             licensePlateNumber: this.form.licensePlateNumber,
             description: this.form.description,
           };
-          HTTP.addFireengines(params)
+          HTTP.addFirestations(params)
             .then((res) => {
               this.confirmLoading = false;
               if (res.status === 200) {
                 this.$message.success(res.data.message);
-                this.$router.push({ name: 'FireStationInfo' });
+                this.$router.push({ name: 'StationGroup' });
               } else {
                 this.$message.error(res.message);
               }

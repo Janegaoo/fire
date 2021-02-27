@@ -1,10 +1,11 @@
 <!--
  * @Author: Jane
- * @Date: 2020-06-15 15:35:01
+ * @Date: 2020-06-11 17:15:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 10:43:47
+ * @LastEditTime: 2021-02-25 16:39:45
  * @Descripttion:
 -->
+
 <template>
   <div class="main">
     <a-card style="margin-bottom: 8px;" :bordered="false" :bodyStyle="{padding: '16px 32px'}">
@@ -12,10 +13,7 @@
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
             <a-form-model-item label="消防员姓名">
-              <a-input v-model="站点名称" placeholder="请输入消防员姓名" />
-            </a-form-model-item>
-            <a-form-model-item label="所属站点">
-              <a-input v-model="站点名称" placeholder="所属站点" />
+              <a-input v-model="username" placeholder="请输入消防员姓名" />
             </a-form-model-item>
             <a-form-model-item label="出勤状态">
               <a-select default-value="0">
@@ -86,69 +84,168 @@
         </a-table-column>
       </a-table>
     </div>
-    <pop v-if="showPop" ref="editChild" :companyId="companyId" :companyName="companyName" :comments="comments" @on-confirm="onConfirm" @on-cancel="onCancel"></pop>
   </div>
 </template>
+
 <script>
-import HTTP from '@/api/distributor';
+// @ is an alias to /src
+// http://dev.fire.njyunzhi.com/api/firestations/firehouses/list
+import HTTP from '@/api/station';
+import PageInfo from '@/utils/page';
+
 
 export default {
-  props: [
-    'companyName',
-    'comments',
-    'companyId',
-  ],
+  name: 'UserList',
+  props: [],
+  components: {
+  },
   data() {
     return {
-      visible: true,
-      confirmLoading: false,
-      form: {
-        companyName: '',
-        comments: '',
-      },
-      rules: {
-        companyName: [{
-          required: true, message: '请输入分销商名称', trigger: 'blur', whitespace: true,
-        }],
-      },
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 6 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
+      id: +this.$route.query.id,
+      formInline: {},
+      inputType: '',
+      searchInput: '',
+      tableData: [],
+      pagination: new PageInfo(this.pageChange, this.onShowSizeChange),
+      params: {},
+      showPop: false,
+      companyId: '',
+      companyName: '',
+      comments: '',
+      contactMobile: '',
+      region: '',
+      city: '',
+      province: '',
+      number: '',
+      name: '',
       selectedRowKeys: [],
+      selectedRows: [],
+      localData: {},
     };
   },
-  watch: {
-    form: {
-      handler(n) {
-        if (n.companyName || n.comments) {
-          this.confirmLoading = false;
-        }
-      },
-      deep: true,
-    },
+  beforeMount() {
+    const v = JSON.parse(localStorage.getItem('stationList'));
+    console.log('-----');
+    console.log(v);
+    this.localData = v;
   },
   mounted() {
-    this.form = {
-      companyName: this.companyName,
-      comments: this.comments,
-      companyId: this.companyId,
-    };
+    this.getData();
+    // const map = new AMap.Map('container', {
+    //   zoom: 12,
+    // });
   },
   methods: {
-    pos() {
-      console.log('pos');
+    onSelectChange(selectedRowKeys, selectedRows) {
+      console.log('selectedRowKeys changed: ', selectedRowKeys);
+      console.log(selectedRows);
+      this.selectedRows = selectedRows;
+      this.selectedRowKeys = selectedRowKeys;
+    },
+    add() {
+      // this.showPop = true;
+      // localStorage.setItem('stationList', JSON.stringify(v));
+      this.$router.push({ name: 'FireInfo', query: { tab: 2, type: 3, id: this.id } });
+    },
+    del() {
+      console.log('del');
+      const params = {
+        id: this.selectedRows[0].id,
+      };
+      HTTP.delFirehouses(params)
+        .then((res) => {
+          if (res.status === 200) {
+            this.$message.success(res.data.message);
+            this.getData();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .catch((res) => {
+          this.$message.error(res.message);
+        });
+    },
+    expor() {
+      console.log('export');
+    },
+    info(v) {
+      this.$router.push({
+        name: 'FireInfo',
+        query: {
+          tab: 1, type: 2, id: v.id, fireengineId: v.fireengineId,
+        },
+      });
+    },
+    disable() {
+
+    },
+    edit(v) {
+      console.log(v);
+      // localStorage.setItem('stationList', JSON.stringify(v));
+      this.$router.push({
+        name: 'FireInfo',
+        query: {
+          tab: 1, type: 2, id: v.id, fireengineId: v.fireengineId,
+        },
+      });
+      // this.$router.push({ name: 'FireInfo', query: { tab: 1, type: 2 } });
+    },
+    onConfirm() {
+      this.showPop = false;
+      this.getData();
+    },
+    onCancel() {
+      this.showPop = false;
     },
     handleSubmit() {
-      
+      console.log(this.formInline);
+      this.params = {};
+      this.params[this.formInline.searchType] = this.formInline.searchValue;
+      this.getData();
     },
-    onSelectChange(selectedRowKeys) {
-      console.log('selectedRowKeys changed: ', selectedRowKeys);
-      this.selectedRowKeys = selectedRowKeys;
+    resetFn() {
+      this.formInline = {};
+      this.params = {};
+      this.getData();
+    },
+    getData() {
+      const params = {
+        id: this.localData.id,
+      };
+      HTTP.fireengines(params)
+        .then((res) => {
+          if (res.status === 200) {
+            this.tableData = res.data.data;
+            this.pagination.total = res.data.totalCount;
+          } else {
+            this.$message.error(res.data.message);
+          }
+        })
+        .catch(() => {
+          this.$message.error('请求失败！');
+        });
+    },
+    // eslint-disable-next-line no-unused-vars
+    pageChange(current) {
+      this.pagination.current = current;
+      // 下面再请求分页接口，重新渲染数据
+      this.getData();
+    },
+    onShowSizeChange(current, pageSize) {
+      // 请求分页接口，重新渲染数据
+      this.pagination.current = 1;
+      this.pagination.pageSize = pageSize;
+      this.getData();
+    },
+    handleChange(sorter) {
+      if (sorter.order) {
+        this.params.order = sorter.columnKey;
+        this.params.sort = sorter.order === 'ascend' ? 'asc' : 'desc';
+      } else {
+        this.params.order = '';
+        this.params.sort = '';
+      }
+      this.getData();
     },
   },
 };
@@ -158,13 +255,16 @@ export default {
   margin-top: 16px;
   margin-left: 16px;
   margin-right: 16px;
+  .addr {
+    font-size: 14px;
+    color: #001529;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .tit {
     padding-right: 20px;
     display: inline-block;
-  }
-  .top {
-    border-bottom: 1px solid #eee;
-    padding-bottom: 28px;
   }
   .pic-list {
     background-color: #fff;
@@ -181,11 +281,23 @@ export default {
       text-align: right;
       // color: #001529;
       // font-size: 18px;
-      // padding-top: 16px;
+      padding-top: 16px;
     }
     .btn {
       margin-left: 10px;
       margin-right: 10px;
+    }
+    .sbtn {
+      margin-left: 4px;
+      margin-right: 4px;
+    }
+    .orange {
+      background: rgba(252, 96, 54, 1);
+      border: 1px solid rgba(252, 96, 54, 1);
+    }
+    .red {
+      background: rgba(162, 20, 20, 1);
+      border: 1px solid rgba(162, 20, 20, 1);
     }
     .green {
       background: green;

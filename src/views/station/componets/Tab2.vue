@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-25 14:07:03
+ * @LastEditTime: 2021-02-25 15:08:37
  * @Descripttion:
 -->
 
@@ -91,6 +91,7 @@ export default {
   },
   data() {
     return {
+      id: +this.$route.query.id,
       formInline: {},
       inputType: '',
       searchInput: '',
@@ -134,7 +135,7 @@ export default {
     add() {
       // this.showPop = true;
       // localStorage.setItem('stationList', JSON.stringify(v));
-      this.$router.push({ name: 'FireInfo', query: { tab: 2, type: 1 } });
+      this.$router.push({ name: 'FireInfo', query: { tab: 2, type: 3, id: this.id } });
     },
     del() {
       console.log('del');
@@ -158,7 +159,12 @@ export default {
       console.log('export');
     },
     info(v) {
-      this.$router.push({ name: 'FireInfo', query: { tab: 1, type: 2, id: v.id } });
+      this.$router.push({
+        name: 'FireInfo',
+        query: {
+          tab: 1, type: 2, id: v.id, fireengineId: v.fireengineId,
+        },
+      });
     },
     disable() {
 
@@ -166,7 +172,12 @@ export default {
     edit(v) {
       console.log(v);
       // localStorage.setItem('stationList', JSON.stringify(v));
-      this.$router.push({ name: 'FireInfo', query: { tab: 1, type: 2, id: v.id } });
+      this.$router.push({
+        name: 'FireInfo',
+        query: {
+          tab: 1, type: 2, id: v.id, fireengineId: v.fireengineId,
+        },
+      });
       // this.$router.push({ name: 'FireInfo', query: { tab: 1, type: 2 } });
     },
     onConfirm() {
