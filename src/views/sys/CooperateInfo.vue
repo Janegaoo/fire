@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
  * @LastEditors: Jane
- * @LastEditTime: 2021-03-03 09:48:18
+ * @LastEditTime: 2021-03-03 10:04:23
  * @Descripttion:
 -->
 <template>
@@ -24,7 +24,7 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item label="站点登陆账号" prop="username" placeholder="请输入站点登陆账号">
+        <a-form-model-item label="站点登陆账号 " prop="username" placeholder="请输入站点登陆账号">
           <a-input v-model="form.username" :disabled="type === 1">
             <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
           </a-input>
