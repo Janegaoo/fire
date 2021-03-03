@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-26 09:03:14
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-02 10:28:27
  * @Descripttion:
 -->
 
@@ -183,7 +183,6 @@ export default {
       this.showPop = true;
     },
     del() {
-      console.log('del');
       const params = {
         id: this.selectedRows[0].id,
       };
@@ -315,26 +314,6 @@ export default {
       // color: #001529;
       // font-size: 18px;
       padding-top: 16px;
-    }
-    .btn {
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-    .sbtn {
-      margin-left: 4px;
-      margin-right: 4px;
-    }
-    .orange {
-      background: rgba(252, 96, 54, 1);
-      border: 1px solid rgba(252, 96, 54, 1);
-    }
-    .red {
-      background: rgba(162, 20, 20, 1);
-      border: 1px solid rgba(162, 20, 20, 1);
-    }
-    .green {
-      background: green;
-      border: 1px solid green;
     }
   }
 }

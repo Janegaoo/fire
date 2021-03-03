@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 14:55:20
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-02 09:11:33
  * @Descripttion:
 -->
 
@@ -13,13 +13,13 @@
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
             <a-form-model-item label="客户姓名">
-              <a-input v-model="站点名称" placeholder="请输入姓名" />
+              <a-input v-model="name" placeholder="请输入姓名" />
             </a-form-model-item>
             <a-form-model-item label="手机号码">
-              <a-input v-model="站点名称" placeholder="请输入手机号" />
+              <a-input v-model="mobile" placeholder="请输入手机号" />
             </a-form-model-item>
             <a-form-model-item label="归属站点">
-              <a-input v-model="站点名称" placeholder="请输入站点名称" />
+              <a-input v-model="firehouseId" placeholder="请输入站点名称" />
             </a-form-model-item>
           </a-form-model>
         </a-col>
@@ -47,24 +47,24 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="姓名" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage}}</span>
+        <a-table-column key="name" title="姓名" data-index="name" :width="75" align="center">
+          <template slot-scope="name">
+            <span>{{name}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="手机号" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage}}</span>
+        <a-table-column key="mobile" title="手机号" data-index="mobile" :width="75" align="center">
+          <template slot-scope="mobile">
+            <span>{{mobile}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="归属站点" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="firehouseId" title="归属站点" data-index="firehouseId" :width="75" align="center">
+          <template slot-scope="firehouseId">
+            <span>{{firehouseId}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="bindStatus" title="注册时间" data-index="bindStatus" :width="110">
-          <template slot-scope="bindStatus">
-            <span :style="bindStatus? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{bindStatus ? '已绑定' : '未绑定'}}</span>
+        <a-table-column key="registerTime" title="归属站点" data-index="registerTime" :width="75" align="center">
+          <template slot-scope="registerTime">
+            <span>{{registerTime}}</span>
           </template>
         </a-table-column>
         <a-table-column key="action" title="操作" :width="80">
@@ -83,7 +83,7 @@
 
 <script>
 // @ is an alias to /src
-import HTTP from '@/api/pics';
+import HTTP from '@/api/customer';
 import PageInfo from '@/utils/page';
 import GroupPop from './componets/Pop.vue';
 
@@ -107,6 +107,9 @@ export default {
       companyName: '',
       comments: '',
       selectedRowKeys: [],
+      firehouseId: '',
+      mobile: '',
+      name: '',
     };
   },
   mounted() {
@@ -147,18 +150,14 @@ export default {
     },
     getData() {
       const params = {
-        page: this.pagination.current,
-        rows: this.pagination.pageSize,
-        order: this.params.order,
-        sort: this.params.sort,
-        id: this.params.id,
-        userId: this.params.userId,
-        colTitle: this.params.colTitle,
-        nickName: this.params.nickName,
+        pageNo: this.pagination.current,
+        pageSize: this.pagination.pageSize,
+        firehouseId: 15,
+        // sort: 'ASC',
       };
-      HTTP.getSearchAlbumInfo(params)
+      HTTP.customers(params)
         .then((res) => {
-          if (res.data.status === 200) {
+          if (res.status === 200) {
             this.tableData = res.data.rows;
             this.pagination.total = res.data.records;
           } else {

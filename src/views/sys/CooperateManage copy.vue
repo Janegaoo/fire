@@ -1,24 +1,22 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Jane
- * @LastEditTime: 2021-03-02 16:45:17
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-02-22 14:45:22
  * @Descripttion:
 -->
 
 <template>
   <div class="main">
-    <!-- <a-card style="margin-bottom: 8px;" :bordered="false" :bodyStyle="{padding: '16px 32px'}">
+    <a-card style="margin-bottom: 8px;" :bordered="false" :bodyStyle="{padding: '16px 32px'}">
       <a-row>
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
-            <a-form-model-item label="登录名">
-              <a-input v-model="站点名称" placeholder="请输入登录名" />
+            <a-form-model-item label="站点名称">
+              <a-input v-model="站点名称" placeholder="请输入站点名称" />
             </a-form-model-item>
-            <a-form-model-item label="消防站">
-              <a-select placeholder="请选择消防站" style="width: 200px">
-                <a-select-option value="0">上海虹桥站点</a-select-option>
-              </a-select>
+            <a-form-model-item label="协作站点名称">
+              <a-input v-model="站点名称" placeholder="请输入协作站点名称" />
             </a-form-model-item>
           </a-form-model>
         </a-col>
@@ -26,13 +24,12 @@
           <a-button type="primary" class="blueBtn" @click="handleSubmit">搜索</a-button>
         </a-col>
       </a-row>
-    </a-card> -->
+    </a-card>
     <div class="pic-list">
       <a-row>
-        <a-col :span="12" class="left">权限管理</a-col>
+        <a-col :span="12" class="left">轨迹查询</a-col>
         <a-col :span="12" class="right">
           <a-button type="primary" class="btn" icon="plus" @click="add">添加</a-button>
-          <!-- <a-button type="danger" class="btn" icon="minus" @click="del">删除</a-button> -->
         </a-col>
       </a-row>
       <a-table
@@ -46,40 +43,53 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="roleName" title="权限组" data-index="roleName" :width="75" align="center">
-          <template slot-scope="roleName">
-            <span style="padding-left:20px">{{roleName}}</span>
+        <a-table-column key="headImage" title="站点" data-index="headImage" :width="75" align="center">
+          <template slot-scope="headImage">
+            <span style="padding-left:20px">{{headImage}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="description" title="描述" data-index="description" :width="75" align="center">
-          <template slot-scope="description">
-            <span style="padding-left:20px">{{description}}</span>
+        <a-table-column key="headImage" title="站点账号" data-index="headImage" :width="75" align="center">
+          <template slot-scope="headImage">
+            <span style="padding-left:20px">{{headImage}}</span>
+          </template>
+        </a-table-column>
+        <a-table-column key="headImage" title="协作站点" data-index="headImage" :width="75" align="center">
+          <template slot-scope="headImage">
+            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+          </template>
+        </a-table-column>
+        <a-table-column key="bindStatus" title="协作账号" data-index="bindStatus" :width="110">
+          <template slot-scope="bindStatus">
+            <span :style="bindStatus? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{bindStatus ? '已绑定' : '未绑定'}}</span>
           </template>
         </a-table-column>
         <a-table-column key="action" title="操作" :width="80">
           <template slot-scope="record">
-            <a-button type="primary" class="sbtn orange" size="small" @click="edit(record)">编辑</a-button>
+            <span class="eye-w" @click="infoFn(record)">
+              <svg-icon iconName="view" class="eye" />
+              <span class="action">详情</span>
+            </span>
           </template>
         </a-table-column>
       </a-table>
     </div>
-    <!-- <pop v-if="showPop" ref="editChild" :companyId="companyId" :companyName="companyName" :comments="comments" @on-confirm="onConfirm" @on-cancel="onCancel"></pop> -->
+    <pop v-if="showPop" ref="editChild" :companyId="companyId" :companyName="companyName" :comments="comments" @on-confirm="onConfirm" @on-cancel="onCancel"></pop>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HTTP from '@/api/sys';
+import HTTP from '@/api/pics';
 import PageInfo from '@/utils/page';
 import moment from 'moment';
-// import Pop from './componets/Pop.vue';
+import Pop from './componets/Pop.vue';
 
 
 export default {
   name: 'UserList',
   props: [],
   components: {
-    // Pop,
+    Pop,
   },
   data() {
     return {
@@ -99,13 +109,54 @@ export default {
     this.getData();
   },
   methods: {
-    edit(v) {
-      console.log(v);
-      // localStorage.setItem('stationList', JSON.stringify(v));
-      this.$router.push({ name: 'AuthInfo', query: { type: 2, id: v.id } });
+    moment,
+    range(start, end) {
+      const result = [];
+      for (let i = start; i < end; i++) {
+        result.push(i);
+      }
+      return result;
+    },
+
+    disabledDate(current) {
+      // Can not select days before today and today
+      return current && current < moment().endOf('day');
+    },
+
+    disabledDateTime() {
+      return {
+        disabledHours: () => this.range(0, 24).splice(4, 20),
+        disabledMinutes: () => this.range(30, 60),
+        disabledSeconds: () => [55, 56],
+      };
+    },
+
+    disabledRangeTime(_, type) {
+      if (type === 'start') {
+        return {
+          disabledHours: () => this.range(0, 60).splice(4, 20),
+          disabledMinutes: () => this.range(30, 60),
+          disabledSeconds: () => [55, 56],
+        };
+      }
+      return {
+        disabledHours: () => this.range(0, 60).splice(20, 4),
+        disabledMinutes: () => this.range(0, 31),
+        disabledSeconds: () => [55, 56],
+      };
     },
     add() {
-      this.$router.push({ name: 'AuthInfo', query: { type: 1 } });
+      this.showPop = true;
+    },
+    del() {
+      console.log('del');
+    },
+    expor() {
+      console.log('export');
+    },
+    info() {
+      console.log('info');
+      this.$router.push({ name: 'StationInfo', query: {} });
     },
     handleSubmit() {
       console.log(this.formInline);
@@ -123,21 +174,21 @@ export default {
       this.getData();
     },
     getData() {
-      // const params = {
-      //   page: this.pagination.current,
-      //   rows: this.pagination.pageSize,
-      //   order: this.params.order,
-      //   sort: this.params.sort,
-      //   id: this.params.id,
-      //   userId: this.params.userId,
-      //   colTitle: this.params.colTitle,
-      //   nickName: this.params.nickName,
-      // };
-      HTTP.role()
+      const params = {
+        page: this.pagination.current,
+        rows: this.pagination.pageSize,
+        order: this.params.order,
+        sort: this.params.sort,
+        id: this.params.id,
+        userId: this.params.userId,
+        colTitle: this.params.colTitle,
+        nickName: this.params.nickName,
+      };
+      HTTP.getSearchAlbumInfo(params)
         .then((res) => {
-          if (res.status === 200) {
-            this.tableData = res.data;
-            this.pagination.total = res.data.length;
+          if (res.data.status === 200) {
+            this.tableData = res.data.rows;
+            this.pagination.total = res.data.records;
           } else {
             this.$message.error(res.data.message);
           }

@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
  * @LastEditors: Jane
- * @LastEditTime: 2021-03-02 15:40:31
+ * @LastEditTime: 2021-03-02 16:52:48
  * @Descripttion:
 -->
 <template>
@@ -192,7 +192,7 @@ export default {
                 this.confirmLoading = false;
                 if (res.status === 200) {
                   this.$message.success(res.data.message);
-                  this.$router.push({ name: 'StationGroup' });
+                  this.$router.push({ name: 'UserManage' });
                 } else {
                   this.$message.error(res.message);
                 }
@@ -216,7 +216,7 @@ export default {
                 this.confirmLoading = false;
                 if (res.status === 200) {
                   this.$message.success(res.data.message);
-                  this.$router.push({ name: 'StationGroup' });
+                  this.$router.push({ name: 'UserManage' });
                 } else {
                   this.$message.error(res.message);
                 }

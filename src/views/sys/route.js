@@ -1,8 +1,8 @@
 /*
  * @Author: Jane
  * @Date: 2020-07-31 15:31:41
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 14:27:25
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-02 17:07:46
  * @Descripttion:
  */
 const route = [
@@ -29,6 +29,27 @@ const route = [
       code: 'sys',
     },
     component: () => import(/* webpackChunkName: "FireStationInfo" */ './CooperateManage.vue'),
+  }, {
+    path: 'userInfo',
+    name: 'UserInfo',
+    meta: {
+      code: 'sys',
+    },
+    component: () => import(/* webpackChunkName: "UserInfo" */ './Info.vue'),
+  }, {
+    path: 'authInfo',
+    name: 'AuthInfo',
+    meta: {
+      code: 'sys',
+    },
+    component: () => import(/* webpackChunkName: "UserInfo" */ './AuthInfo.vue'),
+  }, {
+    path: 'cooperateInfo',
+    name: 'CooperateInfo',
+    meta: {
+      code: 'sys',
+    },
+    component: () => import(/* webpackChunkName: "UserInfo" */ './CooperateInfo.vue'),
   },
 ];
 

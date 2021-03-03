@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-26 09:59:28
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-02 11:23:21
  * @Descripttion:
 -->
 
@@ -150,7 +150,7 @@ export default {
     },
     add() {
       // this.showPop = true;
-      this.$router.push({ name: 'StationGroupInfo', query: { type: 1 } });
+      this.$router.push({ name: 'StationGroupInfo', query: { type: 3 } });
     },
     del() {
       console.log('del');
@@ -174,7 +174,7 @@ export default {
       console.log('export');
     },
     info(v) {
-      this.$router.push({ name: 'StationInfo', query: { tab: 1, type: 2, id: v.id } });
+      this.$router.push({ name: 'StationGroupInfo', query: { tab: 1, type: 1, id: v.id } });
     },
     disable() {
 
@@ -215,7 +215,7 @@ export default {
         // longitude: this.longitude,
         // latitude: this.latitude,
       };
-      HTTP.firehouses(params)
+      HTTP.firestations(params)
         .then((res) => {
           if (res.status === 200) {
             this.tableData = res.data.data;

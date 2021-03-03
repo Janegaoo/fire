@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
  * @LastEditors: Jane
- * @LastEditTime: 2021-03-02 15:40:31
+ * @LastEditTime: 2021-03-03 09:48:18
  * @Descripttion:
 -->
 <template>
@@ -13,7 +13,7 @@
     </a-card> -->
     <div class="pic-list">
       <a-row>
-        <a-col :span="12" class="left">用户详情</a-col>
+        <a-col :span="12" class="left">协作详情</a-col>
         <a-col :span="12" class="right">
         </a-col>
       </a-row>
@@ -24,26 +24,32 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item label="用户姓名" prop="username" placeholder="请输入站组名称">
-          <a-input v-model="form.username" :disabled="type === 1" />
+        <a-form-model-item label="站点登陆账号" prop="username" placeholder="请输入站点登陆账号">
+          <a-input v-model="form.username" :disabled="type === 1">
+            <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
+          </a-input>
         </a-form-model-item>
-        <a-form-model-item label="手机号" prop="mobile" placeholder="请输入地址">
+        <a-form-model-item label="消防站名称" prop="mobile" placeholder="请输入地址">
           <a-input v-model="form.mobile" :disabled="type === 1" />
         </a-form-model-item>
-        <a-form-model-item label="角色">
+        <a-form-model-item label="协作站点登陆账号">
           <!-- 1.超级管理员 2.消防站组管理员 3.消防站点管理员 4.消防员 -->
           <a-select placeholder="请选择角色" v-model="form.role.id" @change="roleSelect">
             <a-select-option v-for="(item, i) in roles" :value="item.id" :key="i">{{ item.roleName }}</a-select-option>
           </a-select>
         </a-form-model-item> 
-        <a-form-model-item label="归属" prop="attached" placeholder="请输入联系人">
+        <a-form-model-item label="协作消防站名称" prop="attached" placeholder="请输入联系人">
           <a-select placeholder="请选择角色" v-model="form.attached.id"  @change="attSelect">
               <a-select-option v-for="(item, i) in form.attacheds" :key="i" :value="item.id">{{item.name}}</a-select-option>
           </a-select>
         </a-form-model-item>
-        <a-form-model-item label="登陆账号" prop="loginName" placeholder="请输入联系电话">
+        <a-form-model-item label="协作站点联系人" prop="loginName" placeholder="请输入联系电话">
+          <a-input class="code-input" v-model="form.loginName" :disabled="type === 1" />
+          <a-button class="code-btn">获取验证码</a-button>
+        </a-form-model-item>
+        <a-form-model-item label="协作站点验证码" prop="loginName" placeholder="请输入联系电话">
           <a-input v-model="form.loginName" :disabled="type === 1" />
-        </a-form-model-item>  
+        </a-form-model-item>
         <a-form-model-item :wrapper-col="{ span: 14, offset: 8 }">
           <a-button @click="back()">取消</a-button>
           <a-button type="primary" style="margin-left: 40px;" @click="onSubmit" :disabled="type === 2">保存</a-button>
@@ -192,7 +198,7 @@ export default {
                 this.confirmLoading = false;
                 if (res.status === 200) {
                   this.$message.success(res.data.message);
-                  this.$router.push({ name: 'StationGroup' });
+                  this.$router.push({ name: 'UserManage' });
                 } else {
                   this.$message.error(res.message);
                 }
@@ -216,7 +222,7 @@ export default {
                 this.confirmLoading = false;
                 if (res.status === 200) {
                   this.$message.success(res.data.message);
-                  this.$router.push({ name: 'StationGroup' });
+                  this.$router.push({ name: 'UserManage' });
                 } else {
                   this.$message.error(res.message);
                 }
@@ -262,6 +268,12 @@ export default {
 .ant-input-affix-wrapper,
 .ant-select {
   width: 70%;
+}
+.code-input {
+  width: 46%;
+}
+.code-btn {
+  width: 24%;
 }
 .decoration {
   text-decoration: underline;

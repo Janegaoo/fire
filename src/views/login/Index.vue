@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-23 10:44:10
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-02 09:56:38
  * @Descripttion:
 -->
 
@@ -104,6 +104,7 @@ export default {
                 this.routes();
                 console.log(res.data);
                 this.$store.dispatch('getUserInfo', res.data);
+                this.me();
                 // this.$store.dispatch('getUserInfo', {});
               } else {
                 this.$message.error(res.data.message);
@@ -114,6 +115,10 @@ export default {
             });
         }
       });
+    },
+    async me() {
+      const res = await HTTP.me();
+      console.log(res);
     },
     async routes() {
       // const res = await HTTP.routes();

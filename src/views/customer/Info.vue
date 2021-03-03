@@ -2,8 +2,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Yawen
- * @LastEditTime: 2020-09-09 14:49:55
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-02 16:33:19
  * @Descripttion:
 -->
 
@@ -80,7 +80,7 @@
 // @ is an alias to /src
 // import AesUtil from '@/utils/aesUtil';
 import PageInfo from '@/utils/page';
-import HTTP from '@/api/user';
+import HTTP from '@/api/sys';
 import PicTable from '@/components/PicTable.vue';
 
 export default {
