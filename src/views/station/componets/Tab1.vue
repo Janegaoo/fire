@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-25 14:00:48
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-05 14:18:01
  * @Descripttion:
 -->
 <template>
@@ -66,9 +66,6 @@ import HTTP from '@/api/station';
 
 export default {
   props: [
-    'companyName',
-    'comments',
-    'companyId',
   ],
   data() {
     return {

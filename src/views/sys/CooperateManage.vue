@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Jane
- * @LastEditTime: 2021-03-02 17:07:11
+ * @LastEditTime: 2021-03-04 11:27:51
  * @Descripttion:
 -->
 
@@ -13,10 +13,10 @@
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
             <a-form-model-item label="站点名称">
-              <a-input v-model="站点名称" placeholder="请输入站点名称" />
+              <a-input v-model="name" placeholder="请输入站点名称" />
             </a-form-model-item>
             <a-form-model-item label="协作站点名称">
-              <a-input v-model="站点名称" placeholder="请输入协作站点名称" />
+              <a-input v-model="cname" placeholder="请输入协作站点名称" />
             </a-form-model-item>
           </a-form-model>
         </a-col>
@@ -43,22 +43,22 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="firehouse" title="站点" data-index="firehouse" :width="75" align="center">
+        <a-table-column key="name" title="站点" data-index="firehouse" :width="75" align="center">
           <template slot-scope="firehouse">
             <span style="padding-left:20px">{{firehouse.name}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="firehouse" title="站点账号" data-index="firehouse" :width="75" align="center">
+        <a-table-column key="loginName" title="站点账号" data-index="firehouse" :width="75" align="center">
           <template slot-scope="firehouse">
             <span style="padding-left:20px">{{firehouse.loginName}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="cooperateFirehouse" title="协作站点" data-index="cooperateFirehouse" :width="75" align="center">
+        <a-table-column key="cname" title="协作站点" data-index="cooperateFirehouse" :width="75" align="center">
           <template slot-scope="cooperateFirehouse">
             <span style="padding-left:20px">{{cooperateFirehouse ? cooperateFirehouse.name : ''}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="cooperateFirehouse" title="协作账号" data-index="cooperateFirehouse" :width="110">
+        <a-table-column key="cloginName" title="协作账号" data-index="cooperateFirehouse" :width="110">
           <template slot-scope="cooperateFirehouse">
             <span>{{cooperateFirehouse ? cooperateFirehouse.loginName : ''}}</span>
           </template>
@@ -90,6 +90,7 @@ export default {
         searchInput: '',
         userLabel: undefined,
       },
+      formInline: {},
       order: '',
       sort: '',
       labelArr: [],
@@ -97,6 +98,7 @@ export default {
       pagination: new PageInfo(this.pageChange, this.onShowSizeChange),
       selectedRowKeys: [],
       name: '',
+      cname: '',
     };
   },
   mounted() {
@@ -104,11 +106,14 @@ export default {
     this.getData();
   },
   methods: {
+    handleSubmit() {
+      
+    },
     del() {
       const params = {
         id: this.selectedRows[0].id,
       };
-      HTTP.delUsers(params)
+      HTTP.delCooperate(params)
         .then((res) => {
           if (res.status === 200) {
             this.$message.success(res.data.message);
@@ -122,15 +127,15 @@ export default {
         });
     },
     add() {
-      this.$router.push({ name: 'CooperateInfo', query: { type: 3 } });
+      this.$router.push({ name: 'CooperateInfo', query: { type: 1 } });
     },
     info(v) {
-      this.$router.push({ name: 'CooperateInfo', query: { tab: 1, type: 2, id: v.id } });
+      this.$router.push({ name: 'CooperateInfo', query: { type: 2, id: v.id } });
     },
     edit(v) {
       console.log(v);
       // localStorage.setItem('stationList', JSON.stringify(v));
-      this.$router.push({ name: 'CooperateInfo', query: { tab: 1, type: 3, id: v.id } });
+      this.$router.push({ name: 'CooperateInfo', query: { type: 3, id: v.id } });
     },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.selectedRows = selectedRows;

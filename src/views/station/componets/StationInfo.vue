@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 09:59:46
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-05 14:19:05
  * @Descripttion:
 -->
 <template>
@@ -54,7 +54,6 @@ export default {
   },
   data() {
     return {
-
     };
   },
   mounted() {

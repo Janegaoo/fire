@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Jane
- * @LastEditTime: 2021-03-04 14:50:34
+ * @LastEditTime: 2021-03-04 13:50:58
  * @Descripttion:
 -->
 
@@ -12,11 +12,11 @@
       <a-row>
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
-            <a-form-model-item label="报警人">
-              <a-input v-model="caller" placeholder="请输入报警人姓名" />
+            <a-form-model-item label="发送人">
+              <a-input v-model="senderName" placeholder="请输入发送人姓名" />
             </a-form-model-item>
-            <a-form-model-item label="报警电话">
-              <a-input v-model="callerMobile" placeholder="请输入报警电话" />
+            <a-form-model-item label="接收人">
+              <a-input v-model="receiverName" placeholder="请输入接收人姓名" />
             </a-form-model-item>
           </a-form-model>
         </a-col>
@@ -27,12 +27,13 @@
     </a-card>
     <div class="pic-list">
       <a-row>
-        <a-col :span="12" class="left">出警记录</a-col>
-        <!-- <a-col :span="12" class="right">
+        <a-col :span="12" class="left">消息管理</a-col>
+        <a-col :span="12" class="right">
           <a-button type="danger" class="btn" @click="del">批量删除</a-button>
-        </a-col> -->
+        </a-col>
       </a-row>
       <a-table
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :data-source="tableData"
         :rowKey="(record, index) => index"
         :pagination="pagination"
@@ -43,46 +44,45 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="caller" title="报警人" data-index="caller" :width="75" align="center">
-          <template slot-scope="caller">
-            <span style="padding-left:20px">{{caller}}</span>
+        <a-table-column key="senderName" title="发送人" data-index="senderName" :width="75" align="center">
+          <template slot-scope="senderName">
+            <span style="padding-left:20px">{{senderName}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="alarmTime" title="报警时间" data-index="alarmTime" :width="75" align="center">
-          <template slot-scope="alarmTime">
-            <span style="padding-left:20px">{{alarmTime | dateFormat}}</span>
+        <a-table-column key="receiverName" title="接收人" data-index="receiverName" :width="75" align="center">
+          <template slot-scope="receiverName">
+            <span style="padding-left:20px">{{receiverName}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="address" title="报警地点" data-index="address" :width="75" align="center">
-          <template slot-scope="address">
-            <span style="padding-left:20px">{{address}}</span>
+        <a-table-column key="time" title="时间" data-index="time" :width="75" align="center">
+          <template slot-scope="time">
+            <span style="padding-left:20px">{{time | dateFormat}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="remark" title="警情描述" data-index="remark" :width="110">
-          <template slot-scope="remark">
-            <span>{{remark}}</span>
+        <a-table-column key="content" title="消息内容" data-index="content" :width="110">
+          <template slot-scope="content">
+            <a-tooltip placement="top">
+              <template slot="title">
+                <div class="addr">{{content}}</div>
+              </template>
+                <div class="addr">{{content}}</div>
+            </a-tooltip>
+          </template>
+          
+        </a-table-column>
+        <a-table-column key="headImage" title="状态" data-index="headImage" :width="75" align="center">
+          <template slot-scope="headImage">
+            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="operationTime" title="接警时间" data-index="operationTime" :width="75" align="center">
-          <template slot-scope="operationTime">
-            <span style="padding-left:20px">{{operationTime}}</span>
-          </template>
-        </a-table-column>
-        <a-table-column key="processingTime" title="处理时常" data-index="processingTime" :width="75" align="center">
-          <template slot-scope="processingTime">
-            <span style="padding-left:20px">{{processingTime | msTot}}</span>
-          </template>
-        </a-table-column>
-        <a-table-column key="status" title="处理结果" data-index="status" :width="75" align="center">
-          <template slot-scope="status">
-            <span style="padding-left:20px">{{status | statusFormat}}</span>
-          </template>
-        </a-table-column>
-        <a-table-column key="action" title="操作" :width="80">
+        <!-- <a-table-column key="action" title="操作" :width="80">
           <template slot-scope="record">
-            <a-button type="primary" class="sbtn orange" size="small" @click="info(record)">查看详情</a-button>
+            <span class="eye-w" @click="infoFn(record)">
+              <svg-icon iconName="view" class="eye" />
+              <span class="action">详情</span>
+            </span>
           </template>
-        </a-table-column>
+        </a-table-column> -->
       </a-table>
     </div>
   </div>
@@ -90,9 +90,8 @@
 
 <script>
 // @ is an alias to /src
-import HTTP from '@/api/data';
+import HTTP from '@/api/messages';
 import PageInfo from '@/utils/page';
-import moment from 'moment';
 
 export default {
   name: 'UserList',
@@ -110,30 +109,11 @@ export default {
       labelArr: [],
       tableData: [],
       pagination: new PageInfo(this.pageChange, this.onShowSizeChange),
-      callerMobile: '',
-      caller: '',
+      senderName: '',
+      receiverName: '',
       selectedRowKeys: [],
       selectedRows: [],
     };
-  },
-  // 0.待处理/未接警 1.已接警/处理中 2. 处理完毕
-  filters: {
-    statusFormat: (v) => {
-      if (!v) return ''
-      if (v === 0) {
-        return '待处理';
-      } else if (v === 1) {
-        return '处理中';
-      } else {
-        return  '处理完毕';
-      }
-    },
-    msTot(v) {
-      if (!v) return 0;
-      const tempTime = moment.duration(v);
-      const y = tempTime.hours() + '小时' + tempTime.minutes() + '分';
-      return y
-    },
   },
   mounted() {
     // this.getLabel();
@@ -143,15 +123,12 @@ export default {
     handleSubmit() {
       
     },
-    info(v) {
-      this.$router.push({ name: 'PoliceInfo', query: { id: v.id } });
-    },
     del() {
       const params = {
         id: this.selectedRows[0].id,
       };
       console.log(params);
-      HTTP.delFirealarms(params)
+      HTTP.delMessages(params)
         .then((res) => {
           if (res.status === 200) {
             this.$message.success(res.data.message);
@@ -168,6 +145,19 @@ export default {
       this.selectedRows = selectedRows;
       this.selectedRowKeys = selectedRowKeys;
     },
+    getLabel() {
+      HTTP.getUserLabel({})
+        .then((res) => {
+          if (res.data.status === 200) {
+            this.labelArr = res.data.labelInfos || [];
+          } else {
+            this.$message.error(res.data.message);
+          }
+        })
+        .catch(() => {
+          this.$message.error('请求失败！');
+        });
+    },
     getData() {
       const { searchInfo, order, sort } = this;
       const params = {
@@ -177,7 +167,7 @@ export default {
       if (searchInfo.inputType && searchInfo.searchInput) {
         params[searchInfo.inputType] = searchInfo.searchInput;
       }
-      HTTP.firealarms(params)
+      HTTP.messages(params)
         .then((res) => {
           if (res.status === 200) {
             this.tableData = res.data.data;

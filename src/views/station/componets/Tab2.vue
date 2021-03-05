@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-25 15:08:37
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-05 14:18:15
  * @Descripttion:
 -->
 
@@ -44,24 +44,24 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="消防车图片" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage}}</span>
+        <a-table-column key="image" title="消防车图片" data-index="image" :width="75" align="center">
+          <template slot-scope="image">
+            <img :src="image" alt="">
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="消防车型号" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage}}</span>
+        <a-table-column key="number" title="消防车型号" data-index="number" :width="75" align="center">
+          <template slot-scope="number">
+            <span style="padding-left:20px">{{number}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="消防车编号" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="vin" title="消防车编号" data-index="vin" :width="75" align="center">
+          <template slot-scope="vin">
+            <span style="padding-left:20px">{{vin}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="bindStatus" title="消防车描述" data-index="bindStatus" :width="110">
-          <template slot-scope="bindStatus">
-            <span :style="bindStatus? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{bindStatus ? '已绑定' : '未绑定'}}</span>
+        <a-table-column key="description" title="消防车描述" data-index="description" :width="110">
+          <template slot-scope="description">
+            <span>{{description}}</span>
           </template>
         </a-table-column>
         <a-table-column key="action" title="操作" :width="80">
@@ -86,7 +86,8 @@ import PageInfo from '@/utils/page';
 
 export default {
   name: 'UserList',
-  props: [],
+  props: [
+  ],
   components: {
   },
   data() {
@@ -113,10 +114,10 @@ export default {
       localData: {},
     };
   },
+  watch: {
+  },
   beforeMount() {
     const v = JSON.parse(localStorage.getItem('stationList'));
-    console.log('-----');
-    console.log(v);
     this.localData = v;
   },
   mounted() {
@@ -200,7 +201,7 @@ export default {
     },
     getData() {
       const params = {
-        id: this.localData.id,
+        id: this.id,
       };
       HTTP.fireengines(params)
         .then((res) => {

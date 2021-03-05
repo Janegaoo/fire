@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 14:45:22
+ * @LastEditTime: 2021-02-22 14:20:05
  * @Descripttion:
 -->
 
@@ -12,11 +12,25 @@
       <a-row>
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
-            <a-form-model-item label="站点名称">
-              <a-input v-model="站点名称" placeholder="请输入站点名称" />
+            <a-form-model-item label="站点编号">
+              <a-input v-model="站点名称" placeholder="请输入站点编号" />
             </a-form-model-item>
-            <a-form-model-item label="协作站点名称">
-              <a-input v-model="站点名称" placeholder="请输入协作站点名称" />
+            <a-form-model-item label="消防车编号">
+              <a-input v-model="站点名称" placeholder="请输入消防车编号" />
+            </a-form-model-item>
+            <a-form-model-item label="车速">
+              <a-input v-model="站点名称" placeholder="请输入车速" />
+            </a-form-model-item>
+            <a-form-model-item label="时间段">
+              <a-range-picker
+                :disabled-date="disabledDate"
+                :disabled-time="disabledRangeTime"
+                :show-time="{
+                  hideDisabledOptions: true,
+                  defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
+                }"
+                format="YYYY-MM-DD HH:mm:ss"
+              />
             </a-form-model-item>
           </a-form-model>
         </a-col>
@@ -27,9 +41,13 @@
     </a-card>
     <div class="pic-list">
       <a-row>
-        <a-col :span="12" class="left">轨迹查询</a-col>
-        <a-col :span="12" class="right">
-          <a-button type="primary" class="btn" icon="plus" @click="add">添加</a-button>
+        <a-col :span="20" class="left">轨迹查询</a-col>
+        <a-col :span="4" class="right">
+          <div class="pos">
+            <a-icon type="environment" />
+            <div>查看轨迹</div>
+          </div>
+          <!-- <a-button type="danger" class="btn" @click="del">批量删除</a-button> -->
         </a-col>
       </a-row>
       <a-table
@@ -43,32 +61,29 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="站点" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="时间" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="站点账号" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="时速（km/h）" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="协作站点" data-index="headImage" :width="75" align="center">
+        <a-table-column key="headImage" title="消防员" data-index="headImage" :width="75" align="center">
           <template slot-scope="headImage">
             <span style="padding-left:20px">{{headImage | dateFormat}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="bindStatus" title="协作账号" data-index="bindStatus" :width="110">
+        <a-table-column key="bindStatus" title="消防车编号" data-index="bindStatus" :width="110">
           <template slot-scope="bindStatus">
             <span :style="bindStatus? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{bindStatus ? '已绑定' : '未绑定'}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="action" title="操作" :width="80">
-          <template slot-scope="record">
-            <span class="eye-w" @click="infoFn(record)">
-              <svg-icon iconName="view" class="eye" />
-              <span class="action">详情</span>
-            </span>
+        <a-table-column key="headImage" title="轨迹描述" data-index="headImage" :width="75" align="center">
+          <template slot-scope="headImage">
+            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
           </template>
         </a-table-column>
       </a-table>

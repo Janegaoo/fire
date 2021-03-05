@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
  * @LastEditors: Jane
- * @LastEditTime: 2021-03-02 10:28:27
+ * @LastEditTime: 2021-03-05 11:25:07
  * @Descripttion:
 -->
 
@@ -66,7 +66,7 @@
         </a-col>
       </a-row>
       <a-table
-        :row-selection="{ type: 'radio', selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         :data-source="tableData"
         :rowKey="(record, index) => index"
         :pagination="pagination"

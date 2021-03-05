@@ -1,16 +1,16 @@
 /*
  * @Author: Jane
  * @Date: 2020-07-31 15:31:41
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 13:45:23
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-04 11:32:55
  * @Descripttion:
  */
 const route = [
   {
-    path: 'news',
-    name: 'News',
+    path: 'messages',
+    name: 'messages',
     meta: {
-      code: 'news',
+      code: 'messages',
     },
     component: () => import(/* webpackChunkName: "FireStationInfo" */ './Index.vue'),
   },

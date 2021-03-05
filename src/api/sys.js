@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-15   18:10:36
  * @LastEditors: Jane
- * @LastEditTime: 2021-03-02 16:57:56
+ * @LastEditTime: 2021-03-04 11:06:14
  * @Descripttion:
  */
 import SERVER_CONFIG from '@build/config';
@@ -35,5 +35,17 @@ export default {
   },
   cooperate(params) {
     return http.get(`api/systems/cooperate`, params);
+  },
+  addCooperate(params) {
+    return http.post(`api/systems/cooperate`, params);
+  },
+  infoCooperate(params) {
+    return http.get(`api/systems/cooperate/${params.id}`);
+  },
+  updateCooperate(params) {
+    return http.post(`api/systems/cooperate/${params.id}`, params);
+  },
+  delCooperate(params) {
+    return http.delete(`api/systems/cooperate/${params.id}`);
   },
 };

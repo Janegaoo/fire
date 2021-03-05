@@ -2,7 +2,7 @@
  * @Author: Jane
  * @Date: 2020-06-15 15:35:01
  * @LastEditors: Jane
- * @LastEditTime: 2021-03-03 10:04:23
+ * @LastEditTime: 2021-03-04 11:25:54
  * @Descripttion:
 -->
 <template>
@@ -24,31 +24,24 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
       >
-        <a-form-model-item label="站点登陆账号 " prop="username" placeholder="请输入站点登陆账号">
-          <a-input v-model="form.username" :disabled="type === 1">
-            <a-icon type="info-circle" style="color: rgba(0,0,0,.45)" />
-          </a-input>
+        <a-form-model-item label="站点登陆账号" prop="loginName" placeholder="请输入站点登陆账号">
+          <a-input-search v-model="form.firehouse.loginName" @search="onSearch" />
         </a-form-model-item>
-        <a-form-model-item label="消防站名称" prop="mobile" placeholder="请输入地址">
-          <a-input v-model="form.mobile" :disabled="type === 1" />
+        <a-form-model-item label="消防站名称" prop="name" placeholder="请输入地址">
+          <a-input v-model="form.firehouse.name" readOnly />
         </a-form-model-item>
-        <a-form-model-item label="协作站点登陆账号">
-          <!-- 1.超级管理员 2.消防站组管理员 3.消防站点管理员 4.消防员 -->
-          <a-select placeholder="请选择角色" v-model="form.role.id" @change="roleSelect">
-            <a-select-option v-for="(item, i) in roles" :value="item.id" :key="i">{{ item.roleName }}</a-select-option>
-          </a-select>
+        <a-form-model-item label="协作站点登陆账号" placeholder="请输入协作站点登陆账号">
+          <a-input-search v-model="form.cooperateFirehouse.loginName" @search="onSearch2" />
         </a-form-model-item> 
-        <a-form-model-item label="协作消防站名称" prop="attached" placeholder="请输入联系人">
-          <a-select placeholder="请选择角色" v-model="form.attached.id"  @change="attSelect">
-              <a-select-option v-for="(item, i) in form.attacheds" :key="i" :value="item.id">{{item.name}}</a-select-option>
-          </a-select>
+        <a-form-model-item label="协作消防站名称" prop="attached" placeholder="请输入协作消防站名称">
+          <a-input v-model="form.cooperateFirehouse.name" readOnly />
         </a-form-model-item>
-        <a-form-model-item label="协作站点联系人" prop="loginName" placeholder="请输入联系电话">
-          <a-input class="code-input" v-model="form.loginName" :disabled="type === 1" />
-          <a-button class="code-btn">获取验证码</a-button>
+        <a-form-model-item label="协作站点联系人" prop="contactMobile" placeholder="请输入联系电话">
+          <a-input class="code-input" v-model="form.cooperateFirehouse.contactMobile" readOnly />
+          <a-button class="code-btn" @click="getCode">{{ SendCode_text }}</a-button>
         </a-form-model-item>
-        <a-form-model-item label="协作站点验证码" prop="loginName" placeholder="请输入联系电话">
-          <a-input v-model="form.loginName" :disabled="type === 1" />
+        <a-form-model-item label="协作站点验证码" prop="smsCode" placeholder="请输入验证码">
+          <a-input v-model="form.smsCode" />
         </a-form-model-item>
         <a-form-model-item :wrapper-col="{ span: 14, offset: 8 }">
           <a-button @click="back()">取消</a-button>
@@ -61,6 +54,7 @@
 <script>
 import HTTP from '@/api/sys';
 import HTTPs from '@/api/station';
+import HTTP_Login from '@/api/login';
 
 export default {
   props: [
@@ -80,7 +74,8 @@ export default {
         companyName: '',
         comments: '',
         role: {},
-        attached: {},
+        cooperateFirehouse: {},
+        firehouse: {},
       },
       rules: {
         companyName: [{
@@ -95,13 +90,9 @@ export default {
         xs: { span: 24 },
         sm: { span: 16 },
       },
-    //  1.超级管理员 2.消防站组管理员 3.消防站点管理员 4.消防员 
-      roles: [
-        {id: 1, roleName: '超级管理员'},
-        {id: 2, roleName: '消防站组管理员'},
-        {id: 3, roleName: '消防站点管理员'},
-        {id: 4, roleName: '消防员'},
-      ],
+      SendCode_text: '获取验证码',
+      time_count: 60,
+      timer: null,
     };
   },
   watch: {
@@ -122,55 +113,67 @@ export default {
     // this.form.itude = `${this.form.longitude},${this.form.latitude}`;
   },
   mounted() {
-    if (this.type !== 3) {
+    if (this.type !== 1) {
       this.getInfo();
     }
   },
   methods: {
-    attSelect(v, i) {
-      console.log('[[[[[');
-      console.log(v, i);
-      for (let i = 0; i < this.form.attacheds.length; i = i + 1) {
-        if (v === this.form.attacheds[i].id) {
-          this.form.attached = this.form.attacheds[i];
-        }
+    getCode() {
+      if (!this.timer && this.form.cooperateFirehouse.contactMobile) {
+        this.timer = setInterval(() => {
+            if (this.time_count > 0) {
+                this.time_count--
+                this.SendCode_text = '重新发送' + this.time_count + 's'
+            } else {
+                this.SendCode_text = '获取验证码'
+                clearInterval(this.timer)
+                this.timer = null
+                this.time_count = 60
+            }
+        }, 1000);
+        this.sms()
       }
     },
-    roleSelect(v, i) {
-      console.log(v, i);
-      //  1.超级管理员 2.消防站组管理员 3.消防站点管理员 4.消防员
-      for (let i = 0; i < this.roles.length; i = i + 1) {
-        if (v === this.roles[i].id) {
-          this.form.role = this.roles[i];
-        }
-      }
-      this.attc(v);
+    async sms() {
+      const params = {
+        mobile: this.form.cooperateFirehouse.contactMobile
+      };
+      HTTP_Login.sms(params)
+        .then((res) => {
+          if (res.status === 200) {
+            this.$message.success(res.data.message);
+          } else {
+            this.$message.error(res.data.message);
+          }
+        })
+        .catch(() => {
+          this.$message.error('请求失败！');
+        });
     },
-    attc(v) {
-      if (v === 2) {
-        this.firestations();
-      } else if (v === 1) {
-        this.form.attacheds = null;
-      } else {
-         this.firehouses();
-      }
+    onSearch(value) {
+      this.firehouses(1,value);
     },
-    async firehouses() {
+    onSearch2(value) {
+      this.firehouses(2, value);
+    },
+    async firehouses(type, v) {
       const params = {
         pageNo: 1,
         pageSize: 100,
+        loginName: v,
       };
       const res = await HTTPs.firehouses(params);
-      this.form.attacheds = res.data.data;
-      console.log(res);
-    },
-    async firestations() {
-      const params = {
-        pageNo: 1,
-        pageSize: 100,
-      };
-      const res = await HTTPs.firestations(params);
-      this.form.attacheds = res.data.data;
+      const data = res.data.data[0];
+      console.log(data);
+      if (type === 1) {
+        // this.form.firehouse = data;
+        this.form = Object.assign(this.form, {firehouse: data})
+      } else {
+        // this.form.cooperateFirehouse = data;
+        this.form = Object.assign(this.form, {cooperateFirehouse: data})
+      }
+      console.log(this.form);
+      this.form = Object.assign({},this.form)
       console.log(res);
     },
     onClose() {
@@ -183,17 +186,15 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           this.confirmLoading = true;
-          if (this.type === 3) {
+          if (this.type === 1) {
             const params = {
               // id: this.id,
-              loginName: this.form.loginName,
-              mobile: this.form.mobile,
-              username: this.form.username,
-              attached: this.form.attached,
-              role: this.form.role,
+              cooperateFirehouse: this.form.cooperateFirehouse,
+              firehouse: this.form.firehouse,
+              smsCode: this.form.smsCode,
             };
             console.log(params);
-            HTTP.addUsers(params)
+            HTTP.addCooperate(params)
               .then((res) => {
                 this.confirmLoading = false;
                 if (res.status === 200) {
@@ -210,14 +211,12 @@ export default {
           } else {//
             const params = {
               id: this.id,
-              loginName: this.form.loginName,
-              mobile: this.form.mobile,
-              username: this.form.username,
-              attached: this.form.attached,
-              role: this.form.role,
+              cooperateFirehouse: this.form.cooperateFirehouse,
+              firehouse: this.form.firehouse,
+              smsCode: this.form.smsCode,
             };
             console.log(params);
-            HTTP.updateUsers(params)
+            HTTP.updateCooperate(params)
               .then((res) => {
                 this.confirmLoading = false;
                 if (res.status === 200) {
@@ -241,7 +240,7 @@ export default {
         id: this.id,
         fireengineId: this.fireengineId,
       };
-      HTTP.infoUsers(params)
+      HTTP.infoCooperate(params)
         .then((res) => {
           if (res.status === 200) {
             // Object.keys(v).forEach((key) => {
@@ -250,7 +249,6 @@ export default {
             this.form = res.data;
             console.log('----');
             console.log(this.form);
-            this.attc(+this.form.role.id);
           } else {
             this.$message.error(res.message);
           }
@@ -273,6 +271,7 @@ export default {
   width: 46%;
 }
 .code-btn {
+  // margin-left: 4px;
   width: 24%;
 }
 .decoration {

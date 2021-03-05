@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 14:20:05
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-05 11:16:43
  * @Descripttion:
 -->
 
@@ -88,122 +88,103 @@
         </a-table-column>
       </a-table>
     </div>
-    <pop v-if="showPop" ref="editChild" :companyId="companyId" :companyName="companyName" :comments="comments" @on-confirm="onConfirm" @on-cancel="onCancel"></pop>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HTTP from '@/api/pics';
+import HTTP from '@/api/data';
 import PageInfo from '@/utils/page';
 import moment from 'moment';
-import Pop from './componets/Pop.vue';
-
 
 export default {
   name: 'UserList',
   props: [],
-  components: {
-    Pop,
-  },
   data() {
     return {
+      searchInfo: {
+        inputType: undefined,
+        searchInput: '',
+        userLabel: undefined,
+      },
       formInline: {},
-      inputType: '',
-      searchInput: '',
+      order: '',
+      sort: '',
+      labelArr: [],
       tableData: [],
       pagination: new PageInfo(this.pageChange, this.onShowSizeChange),
-      params: {},
-      showPop: false,
-      companyId: '',
-      companyName: '',
-      comments: '',
+      callerMobile: '',
+      caller: '',
+      selectedRowKeys: [],
+      selectedRows: [],
     };
   },
+  // 0.待处理/未接警 1.已接警/处理中 2. 处理完毕
+  filters: {
+    statusFormat: (v) => {
+      if (!v) return ''
+      if (v === 0) {
+        return '待处理';
+      } else if (v === 1) {
+        return '处理中';
+      } else {
+        return  '处理完毕';
+      }
+    },
+    msTot(v) {
+      if (!v) return 0;
+      const tempTime = moment.duration(v);
+      const y = tempTime.hours() + '小时' + tempTime.minutes() + '分';
+      return y
+    },
+  },
   mounted() {
+    // this.getLabel();
     this.getData();
   },
   methods: {
-    moment,
-    range(start, end) {
-      const result = [];
-      for (let i = start; i < end; i++) {
-        result.push(i);
-      }
-      return result;
+    handleSubmit() {
+      
     },
-
-    disabledDate(current) {
-      // Can not select days before today and today
-      return current && current < moment().endOf('day');
-    },
-
-    disabledDateTime() {
-      return {
-        disabledHours: () => this.range(0, 24).splice(4, 20),
-        disabledMinutes: () => this.range(30, 60),
-        disabledSeconds: () => [55, 56],
-      };
-    },
-
-    disabledRangeTime(_, type) {
-      if (type === 'start') {
-        return {
-          disabledHours: () => this.range(0, 60).splice(4, 20),
-          disabledMinutes: () => this.range(30, 60),
-          disabledSeconds: () => [55, 56],
-        };
-      }
-      return {
-        disabledHours: () => this.range(0, 60).splice(20, 4),
-        disabledMinutes: () => this.range(0, 31),
-        disabledSeconds: () => [55, 56],
-      };
-    },
-    add() {
-      this.showPop = true;
+    info(v) {
+      this.$router.push({ name: 'PoliceInfo', query: { id: v.id } });
     },
     del() {
-      console.log('del');
+      const params = {
+        id: this.selectedRows[0].id,
+      };
+      console.log(params);
+      HTTP.delFirealarms(params)
+        .then((res) => {
+          if (res.status === 200) {
+            this.$message.success(res.data.message);
+            this.getData();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .catch((res) => {
+          this.$message.error(res.message);
+        });
     },
-    expor() {
-      console.log('export');
-    },
-    info() {
-      console.log('info');
-      this.$router.push({ name: 'StationInfo', query: {} });
-    },
-    handleSubmit() {
-      console.log(this.formInline);
-      // id
-      // userId
-      // colTitle
-      // nickName
-      this.params = {};
-      this.params[this.formInline.searchType] = this.formInline.searchValue;
-      this.getData();
-    },
-    resetFn() {
-      this.formInline = {};
-      this.params = {};
-      this.getData();
+    onSelectChange(selectedRowKeys, selectedRows) {
+      this.selectedRows = selectedRows;
+      this.selectedRowKeys = selectedRowKeys;
     },
     getData() {
+      const { searchInfo, order, sort } = this;
       const params = {
-        page: this.pagination.current,
-        rows: this.pagination.pageSize,
-        order: this.params.order,
-        sort: this.params.sort,
-        id: this.params.id,
-        userId: this.params.userId,
-        colTitle: this.params.colTitle,
-        nickName: this.params.nickName,
+        pageNo: this.pagination.current,
+        pageSize: this.pagination.pageSize,
       };
-      HTTP.getSearchAlbumInfo(params)
+      if (searchInfo.inputType && searchInfo.searchInput) {
+        params[searchInfo.inputType] = searchInfo.searchInput;
+      }
+      HTTP.trajectory(params)
         .then((res) => {
-          if (res.data.status === 200) {
-            this.tableData = res.data.rows;
-            this.pagination.total = res.data.records;
+          if (res.status === 200) {
+            this.tableData = res.data.data;
+            this.pagination.total = res.data.totalCount;
           } else {
             this.$message.error(res.data.message);
           }
@@ -212,7 +193,21 @@ export default {
           this.$message.error('请求失败！');
         });
     },
-    // eslint-disable-next-line no-unused-vars
+    resetSearch() {
+      this.searchInfo = {
+        inputType: undefined,
+        searchInput: '',
+        userLabel: undefined,
+      };
+      this.pagination.current = 1;
+      this.pagination.pageSize = 10;
+      this.order = '';
+      this.sort = '';
+      this.getData();
+    },
+    toThousands(num) {
+      return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+    },
     pageChange(current) {
       this.pagination.current = current;
       // 下面再请求分页接口，重新渲染数据
@@ -224,13 +219,13 @@ export default {
       this.pagination.pageSize = pageSize;
       this.getData();
     },
-    handleChange(sorter) {
+    handleChange(pagination, filters, sorter) {
       if (sorter.order) {
-        this.params.order = sorter.columnKey;
-        this.params.sort = sorter.order === 'ascend' ? 'asc' : 'desc';
+        this.order = sorter.columnKey;
+        this.sort = sorter.order === 'ascend' ? 'asc' : 'desc';
       } else {
-        this.params.order = '';
-        this.params.sort = '';
+        this.order = '';
+        this.sort = '';
       }
       this.getData();
     },
@@ -242,41 +237,46 @@ export default {
   margin-top: 16px;
   margin-left: 16px;
   margin-right: 16px;
-  .tit {
-    padding-right: 20px;
-    display: inline-block;
+  .listName {
+    padding: 16px 32px;
+    color: rgba(0, 21, 41, 1);
+    font-size: 18px;
   }
-  .pos {
-    text-align: center;
-    div {
-      font-size: 12px;
-    }
+  .headImage {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
   }
-  .pic-list {
-    background-color: #fff;
-    margin-top: 10px;
-    // height: 80vh;
-    // overflow: auto;
-    .left {
-      text-align: left;
-      color: #001529;
-      font-size: 18px;
-      padding: 16px 32px;
-    }
-    .right {
-      text-align: right;
-      // color: #001529;
-      // font-size: 18px;
-      padding-top: 16px;
-    }
-    .btn {
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-    .green {
-      background: green;
-      border: 1px solid green;
-    }
+  ::v-deep .ant-table-thead > tr:first-child > th:first-child {
+    padding-left: 32px;
+  }
+  ::v-deep .ant-table-pagination.ant-pagination {
+    padding-right: 30px;
+  }
+  .action {
+    color: #f03947;
+    padding-left: 6px;
+    font-size: 9px;
+    font-style: normal;
+  }
+  .eye {
+    color: #f03947;
+    font-size: 14px;
+  }
+  .eye-w {
+    cursor: pointer;
+  }
+  .left {
+    text-align: left;
+    color: #001529;
+    font-size: 18px;
+    padding: 16px 32px;
+  }
+  .right {
+    text-align: right;
+    // color: #001529;
+    // font-size: 18px;
+    padding-top: 16px;
   }
 }
 </style>

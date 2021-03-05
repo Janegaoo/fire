@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 14:06:25
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-05 11:05:42
  * @Descripttion:
 -->
 
@@ -13,10 +13,10 @@
         <a-col :span="22">
           <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
             <a-form-model-item label="车辆型号">
-              <a-input v-model="站点名称" placeholder="请输入车辆型号" />
+              <a-input v-model="model" placeholder="请输入车辆型号" />
             </a-form-model-item>
             <a-form-model-item label="车辆编号">
-              <a-input v-model="站点名称" placeholder="请输入车辆编号" />
+              <a-input v-model="number" placeholder="请输入车辆编号" />
             </a-form-model-item>
             <a-form-model-item label="点检状态">
               <a-select default-value="0">
@@ -34,7 +34,7 @@
     </a-card>
     <div class="pic-list">
       <a-row>
-        <a-col :span="12" class="left">基础配置管理</a-col>
+        <a-col :span="12" class="left">维护报告</a-col>
         <a-col :span="12" class="right">
           <a-button type="primary" class="btn green" icon="download" @click="expor">导出</a-button>
         </a-col>
@@ -50,49 +50,49 @@
             <span style="padding-left:20px">{{id}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="点检单批次号" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage}}</span>
+        <a-table-column key="checkingplanBatchNo" title="点检单批次号" data-index="checkingplanBatchNo" :width="75" align="center">
+          <template slot-scope="checkingplanBatchNo">
+            <span style="padding-left:20px">{{checkingplanBatchNo}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="车辆型号" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage}}</span>
+        <a-table-column key="number" title="车辆型号" data-index="fireengine" :width="75" align="center">
+          <template slot-scope="fireengine">
+            <span style="padding-left:20px">{{fireengine.vin}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="车辆编号" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="vin" title="车辆编号" data-index="fireengine" :width="75" align="center">
+          <template slot-scope="fireengine">
+            <span style="padding-left:20px">{{fireengine.number}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="bindStatus" title="车型照片" data-index="bindStatus" :width="110">
-          <template slot-scope="bindStatus">
-            <span :style="bindStatus? 'color:rgba(0,21,41,1)' : 'color: rgba(153,160,170,1)'">{{bindStatus ? '已绑定' : '未绑定'}}</span>
+        <a-table-column key="image" title="车型照片" data-index="fireengine" :width="75" align="center">
+          <template slot-scope="fireengine">
+            <img :src="fireengine.image" alt="">
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="点检人员" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="username" title="点检人员" data-index="checkingFireman" :width="75" align="center">
+          <template slot-scope="checkingFireman">
+            <span style="padding-left:20px">{{checkingFireman.username}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="点检状态" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="status" title="点检状态" data-index="checkingFireman" :width="75" align="center">
+          <template slot-scope="checkingFireman">
+            <span style="padding-left:20px">{{checkingFireman.status}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="点检时间" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="checkTime" title="点检时间" data-index="checkTime" :width="75" align="center">
+          <template slot-scope="checkTime">
+            <span style="padding-left:20px">{{checkTime | dateFormat}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="维护结果" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="repair" title="维护结果" data-index="repair" :width="75" align="center">
+          <template slot-scope="repair">
+            <span style="padding-left:20px">{{repair === 1 ? '无需维护' : '已维护'}}</span>
           </template>
         </a-table-column>
-        <a-table-column key="headImage" title="维护时间" data-index="headImage" :width="75" align="center">
-          <template slot-scope="headImage">
-            <span style="padding-left:20px">{{headImage | dateFormat}}</span>
+        <a-table-column key="repairTime" title="维护时间" data-index="repairTime" :width="75" align="center">
+          <template slot-scope="repairTime">
+            <span style="padding-left:20px">{{repairTime | dateFormat}}</span>
           </template>
         </a-table-column>
         <a-table-column key="action" title="操作" :width="80">
@@ -105,85 +105,105 @@
         </a-table-column>
       </a-table>
     </div>
-    <group-pop v-if="showPop" ref="editChild" :companyId="companyId" :companyName="companyName" :comments="comments" @on-confirm="onConfirm" @on-cancel="onCancel"></group-pop>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HTTP from '@/api/pics';
+import HTTP from '@/api/data';
 import PageInfo from '@/utils/page';
-import GroupPop from './componets/Pop.vue';
-
+import moment from 'moment';
 
 export default {
   name: 'UserList',
   props: [],
-  components: {
-    GroupPop,
-  },
   data() {
     return {
+      searchInfo: {
+        inputType: undefined,
+        searchInput: '',
+        userLabel: undefined,
+      },
       formInline: {},
-      inputType: '',
-      searchInput: '',
+      order: '',
+      sort: '',
+      labelArr: [],
       tableData: [],
       pagination: new PageInfo(this.pageChange, this.onShowSizeChange),
-      params: {},
-      showPop: false,
-      companyId: '',
-      companyName: '',
-      comments: '',
+      callerMobile: '',
+      caller: '',
+      selectedRowKeys: [],
+      selectedRows: [],
+      number: '',
+      model: '',
     };
   },
+  // 0.待处理/未接警 1.已接警/处理中 2. 处理完毕
+  filters: {
+    statusFormat: (v) => {
+      if (!v) return ''
+      if (v === 0) {
+        return '待处理';
+      } else if (v === 1) {
+        return '处理中';
+      } else {
+        return  '处理完毕';
+      }
+    },
+    msTot(v) {
+      if (!v) return 0;
+      const tempTime = moment.duration(v);
+      const y = tempTime.hours() + '小时' + tempTime.minutes() + '分';
+      return y
+    },
+  },
   mounted() {
+    // this.getLabel();
     this.getData();
   },
   methods: {
-    add() {
-      this.showPop = true;
+    handleSubmit() {
+      
+    },
+    info(v) {
+      this.$router.push({ name: 'MaintainReportInfo', query: { id: v.id } });
     },
     del() {
-      console.log('del');
+      const params = {
+        id: this.selectedRows[0].id,
+      };
+      console.log(params);
+      HTTP.delFirealarms(params)
+        .then((res) => {
+          if (res.status === 200) {
+            this.$message.success(res.data.message);
+            this.getData();
+          } else {
+            this.$message.error(res.message);
+          }
+        })
+        .catch((res) => {
+          this.$message.error(res.message);
+        });
     },
-    expor() {
-      console.log('export');
-    },
-    info() {
-      console.log('info');
-      this.$router.push({ name: 'StationInfo', query: {} });
-    },
-    handleSubmit() {
-      console.log(this.formInline);
-      // id
-      // userId
-      // colTitle
-      // nickName
-      this.params = {};
-      this.params[this.formInline.searchType] = this.formInline.searchValue;
-      this.getData();
-    },
-    resetFn() {
-      this.formInline = {};
-      this.params = {};
-      this.getData();
+    onSelectChange(selectedRowKeys, selectedRows) {
+      this.selectedRows = selectedRows;
+      this.selectedRowKeys = selectedRowKeys;
     },
     getData() {
+      const { searchInfo, order, sort } = this;
       const params = {
-        page: this.pagination.current,
-        rows: this.pagination.pageSize,
-        order: this.params.order,
-        sort: this.params.sort,
-        id: this.params.id,
-        userId: this.params.userId,
-        colTitle: this.params.colTitle,
-        nickName: this.params.nickName,
+        pageNo: this.pagination.current,
+        pageSize: this.pagination.pageSize,
       };
-      HTTP.getSearchAlbumInfo(params)
+      if (searchInfo.inputType && searchInfo.searchInput) {
+        params[searchInfo.inputType] = searchInfo.searchInput;
+      }
+      HTTP.checkingrecord(params)
         .then((res) => {
-          if (res.data.status === 200) {
-            this.tableData = res.data.rows;
-            this.pagination.total = res.data.records;
+          if (res.status === 200) {
+            this.tableData = res.data.data;
+            this.pagination.total = res.data.totalCount;
           } else {
             this.$message.error(res.data.message);
           }
@@ -192,7 +212,21 @@ export default {
           this.$message.error('请求失败！');
         });
     },
-    // eslint-disable-next-line no-unused-vars
+    resetSearch() {
+      this.searchInfo = {
+        inputType: undefined,
+        searchInput: '',
+        userLabel: undefined,
+      };
+      this.pagination.current = 1;
+      this.pagination.pageSize = 10;
+      this.order = '';
+      this.sort = '';
+      this.getData();
+    },
+    toThousands(num) {
+      return (num || 0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
+    },
     pageChange(current) {
       this.pagination.current = current;
       // 下面再请求分页接口，重新渲染数据
@@ -204,13 +238,13 @@ export default {
       this.pagination.pageSize = pageSize;
       this.getData();
     },
-    handleChange(sorter) {
+    handleChange(pagination, filters, sorter) {
       if (sorter.order) {
-        this.params.order = sorter.columnKey;
-        this.params.sort = sorter.order === 'ascend' ? 'asc' : 'desc';
+        this.order = sorter.columnKey;
+        this.sort = sorter.order === 'ascend' ? 'asc' : 'desc';
       } else {
-        this.params.order = '';
-        this.params.sort = '';
+        this.order = '';
+        this.sort = '';
       }
       this.getData();
     },
@@ -222,35 +256,46 @@ export default {
   margin-top: 16px;
   margin-left: 16px;
   margin-right: 16px;
-  .tit {
-    padding-right: 20px;
-    display: inline-block;
+  .listName {
+    padding: 16px 32px;
+    color: rgba(0, 21, 41, 1);
+    font-size: 18px;
   }
-  .pic-list {
-    background-color: #fff;
-    margin-top: 10px;
-    // height: 80vh;
-    // overflow: auto;
-    .left {
-      text-align: left;
-      color: #001529;
-      font-size: 18px;
-      padding: 16px 32px;
-    }
-    .right {
-      text-align: right;
-      // color: #001529;
-      // font-size: 18px;
-      padding-top: 16px;
-    }
-    .btn {
-      margin-left: 10px;
-      margin-right: 10px;
-    }
-    .green {
-      background: green;
-      border: 1px solid green;
-    }
+  .headImage {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  ::v-deep .ant-table-thead > tr:first-child > th:first-child {
+    padding-left: 32px;
+  }
+  ::v-deep .ant-table-pagination.ant-pagination {
+    padding-right: 30px;
+  }
+  .action {
+    color: #f03947;
+    padding-left: 6px;
+    font-size: 9px;
+    font-style: normal;
+  }
+  .eye {
+    color: #f03947;
+    font-size: 14px;
+  }
+  .eye-w {
+    cursor: pointer;
+  }
+  .left {
+    text-align: left;
+    color: #001529;
+    font-size: 18px;
+    padding: 16px 32px;
+  }
+  .right {
+    text-align: right;
+    // color: #001529;
+    // font-size: 18px;
+    padding-top: 16px;
   }
 }
 </style>

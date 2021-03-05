@@ -1,8 +1,8 @@
 <!--
  * @Author: Jane
  * @Date: 2020-06-11 17:15:22
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-25 16:39:45
+ * @LastEditors: Jane
+ * @LastEditTime: 2021-03-05 14:52:46
  * @Descripttion:
 -->
 
@@ -125,8 +125,6 @@ export default {
   },
   beforeMount() {
     const v = JSON.parse(localStorage.getItem('stationList'));
-    console.log('-----');
-    console.log(v);
     this.localData = v;
   },
   mounted() {
@@ -210,9 +208,10 @@ export default {
     },
     getData() {
       const params = {
-        id: this.localData.id,
+        id: this.id,
+        firemanId: this.id,
       };
-      HTTP.fireengines(params)
+      HTTP.fireman(params)
         .then((res) => {
           if (res.status === 200) {
             this.tableData = res.data.data;
